@@ -329,6 +329,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "ce-capwords"
+version = "0.2.14"
+dependencies = [
+ "ce-core",
+ "itertools 0.14.0",
+ "serde",
+ "serde_json",
+ "tapi",
+ "tracing",
+]
+
+[[package]]
 name = "ce-compiler"
 version = "0.2.14"
 dependencies = [
@@ -358,6 +370,18 @@ dependencies = [
  "tapi",
  "thiserror 2.0.12",
  "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "ce-eqsolve"
+version = "0.2.14"
+dependencies = [
+ "ce-core",
+ "itertools 0.14.0",
+ "serde",
+ "serde_json",
+ "tapi",
  "tracing",
 ]
 
@@ -406,8 +430,10 @@ name = "ce-shell"
 version = "0.2.14"
 dependencies = [
  "ce-calculator",
+ "ce-capwords",
  "ce-compiler",
  "ce-core",
+ "ce-eqsolve",
  "ce-interpreter",
  "ce-parser",
  "ce-security",
@@ -469,7 +495,9 @@ dependencies = [
 name = "chip"
 version = "0.2.14"
 dependencies = [
+ "ce-core",
  "clap",
+ "gcl",
  "indexmap",
  "itertools 0.14.0",
  "lalrpop",
@@ -477,6 +505,7 @@ dependencies = [
  "mcltl",
  "miette 7.6.0",
  "once_cell",
+ "rand 0.9.1",
  "serde",
  "smtlib",
  "thiserror 2.0.12",
@@ -488,12 +517,15 @@ name = "chip-cli"
 version = "0.2.14"
 dependencies = [
  "camino",
+ "ce-core",
  "chip",
  "clap",
  "color-eyre",
+ "gcl",
  "gitty",
  "itertools 0.14.0",
  "miette 7.6.0",
+ "rand 0.9.1",
  "serde",
  "serde_json",
  "smtlib",
@@ -1546,6 +1578,7 @@ dependencies = [
  "axum",
  "ce-core",
  "ce-shell",
+ "chip",
  "chrono",
  "clap",
  "color-eyre",

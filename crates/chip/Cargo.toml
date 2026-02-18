@@ -18,6 +18,13 @@ serde.workspace = true
 smtlib.workspace = true
 thiserror.workspace = true
 tracing.workspace = true
+ce-core = { workspace = true, optional = true }
+gcl = { workspace = true, optional = true }
+rand = { workspace = true, optional = true }
+
+[features]
+default = []
+generate = ["ce-core", "gcl", "rand"]
 
 [build-dependencies]
 lalrpop.workspace = true

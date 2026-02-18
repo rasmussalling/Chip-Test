@@ -25,6 +25,7 @@ pub fn endpoints() -> tapi::endpoints::Endpoints<'static, AppState> {
     type E = &'static dyn tapi::endpoints::Endpoint<AppState>;
     tapi::endpoints::Endpoints::new([
         &generate::endpoint as E,
+        &generate_chip::endpoint as E,
         &events::endpoint as E,
         &checko_csv::endpoint as E,
         &checko_public::endpoint as E,
@@ -44,6 +45,17 @@ struct GenerateParams {
 async fn generate(Json(params): Json<GenerateParams>) -> Json<ce_shell::Input> {
     let input = params.analysis.gen_input_seeded(params.seed);
     Json(input)
+}
+
+#[derive(tapi::Tapi, Debug, Clone, serde::Serialize, serde::Deserialize)]
+struct ChipProgram {
+    program: String,
+}
+
+#[tapi::tapi(path = "/generate-chip", method = Get)]
+async fn generate_chip() -> Json<ChipProgram> {
+    let program = chip::generate_sample_program();
+    Json(ChipProgram { program })
 }
 
 #[derive(tapi::Tapi, Debug, Clone, PartialEq, serde::Serialize)]

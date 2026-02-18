@@ -10,8 +10,10 @@ license.workspace = true
 
 [dependencies]
 ce-calculator.workspace = true
+ce-capwords.workspace = true
 ce-compiler.workspace = true
 ce-core.workspace = true
+ce-eqsolve.workspace = true
 ce-interpreter.workspace = true
 ce-parser.workspace = true
 ce-security.workspace = true

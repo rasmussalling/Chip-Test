@@ -16,12 +16,15 @@ dist = true
 
 [dependencies]
 camino.workspace = true
-chip.workspace = true
+ce-core.workspace = true
+chip = { workspace = true, features = ["generate"] }
 clap.workspace = true
 color-eyre.workspace = true
+gcl.workspace = true
 gitty.workspace = true
 itertools.workspace = true
 miette.workspace = true
+rand.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 smtlib = { workspace = true, features = ["tokio"] }
@@ -30,3 +33,4 @@ toml.workspace = true
 tracing.workspace = true
 tracing-error.workspace = true
 tracing-subscriber.workspace = true
+

@@ -20,10 +20,10 @@ type GenerationOptions<R, Ctx, G> = Vec<(f32, Box<dyn Fn(&mut Ctx, &mut R) -> G>
 impl Default for Context {
     fn default() -> Self {
         Self {
-            fuel: 10,
-            recursion_limit: Default::default(),
-            negation_limit: Default::default(),
-            no_loops: Default::default(),
+            fuel: 4,
+            recursion_limit: 1,
+            negation_limit: 1,
+            no_loops: true,
             no_division: Default::default(),
             no_unary_minus: Default::default(),
             names: ["a", "b", "c", "d"].map(Into::into).to_vec(),
@@ -164,8 +164,8 @@ impl Generate for Commands {
 impl Generate for Command {
     type Context = Context;
     fn gn<R: Rng>(cx: &mut Self::Context, rng: &mut R) -> Self {
-        cx.recursion_limit = 5;
-        cx.negation_limit = 3;
+        cx.recursion_limit = 1;
+        cx.negation_limit = 1;
         cx.sample(
             rng,
             vec![
@@ -197,8 +197,8 @@ impl Generate for Guard {
     type Context = Context;
 
     fn gn<R: Rng>(cx: &mut Self::Context, rng: &mut R) -> Self {
-        cx.recursion_limit = 5;
-        cx.negation_limit = 3;
+        cx.recursion_limit = 1;
+        cx.negation_limit = 1;
         Guard(BExpr::gn(cx, rng), Commands::gn(cx, rng))
     }
 }

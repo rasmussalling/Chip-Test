@@ -101,6 +101,14 @@ export namespace Calculator {
     error: string
   };
 }
+export namespace Capwords {
+  export type Input = {
+    text: string
+  };
+  export type Output = {
+    cap_string: string
+  };
+}
 export namespace Compiler {
   export type Input = {
     commands: string,
@@ -218,22 +226,34 @@ export namespace ce_core {
     | { "type": "Mismatch", reason: string }
     | { "type": "TimeOut" };
 }
+export namespace ce_eqsolve {
+  export type Input = {
+    eq: string
+  };
+  export type Output = {
+    result: string
+  };
+}
 export namespace ce_shell {
   export type Envs =
     | { "analysis": "Calculator", "io": { input: Calculator.Input, output: Calculator.Output, meta: void } }
-    | { "analysis": "Parser", "io": { input: Parser.Input, output: Parser.Output, meta: void } }
+    | { "analysis": "Capwords", "io": { input: Capwords.Input, output: Capwords.Output, meta: void } }
     | { "analysis": "Compiler", "io": { input: Compiler.Input, output: Compiler.Output, meta: void } }
+    | { "analysis": "Eqsolve", "io": { input: ce_eqsolve.Input, output: ce_eqsolve.Output, meta: void } }
     | { "analysis": "Interpreter", "io": { input: Interpreter.Input, output: Interpreter.Output, meta: GCL.TargetDef[] } }
+    | { "analysis": "Parser", "io": { input: Parser.Input, output: Parser.Output, meta: void } }
     | { "analysis": "Security", "io": { input: SecurityAnalysis.Input, output: SecurityAnalysis.Output, meta: SecurityAnalysis.Meta } }
     | { "analysis": "Sign", "io": { input: SignAnalysis.Input, output: SignAnalysis.Output, meta: GCL.TargetDef[] } };
   export type Analysis =
     | "Calculator"
-    | "Parser"
+    | "Capwords"
     | "Compiler"
+    | "Eqsolve"
     | "Interpreter"
+    | "Parser"
     | "Security"
     | "Sign";
-  export const ANALYSIS: Analysis[] = ["Calculator", "Parser", "Compiler", "Interpreter", "Security", "Sign"];
+  export const ANALYSIS: Analysis[] = ["Calculator", "Capwords", "Compiler", "Eqsolve", "Interpreter", "Parser", "Security", "Sign"];
   export namespace io {
     export type Input = {
       analysis: ce_shell.Analysis,
@@ -336,10 +356,6 @@ export namespace inspectify {
     }
   }
   export namespace endpoints {
-    export type GenerateParams = {
-      analysis: ce_shell.Analysis,
-      seed: (number | null)
-    };
     export type Event =
       | { "type": "Reset" }
       | { "type": "CompilationStatus", "value": { status: inspectify.endpoints.CompilationStatus } }
@@ -352,11 +368,15 @@ export namespace inspectify {
       output: (ce_shell.io.Output | null),
       error: (string | null)
     };
+    export type ChipProgram = {
+      program: string
+    };
     export type PublicEvent =
       | { "type": "Reset" }
       | { "type": "StateChanged", "value": inspectify.checko.scoreboard.PublicState };
-    export type AnalysisExecution = {
-      id: driver.job.JobId
+    export type GenerateParams = {
+      analysis: ce_shell.Analysis,
+      seed: (number | null)
     };
     export type CompilationStatus = {
       id: (driver.job.JobId | null),
@@ -371,6 +391,9 @@ export namespace inspectify {
       stdout: string,
       spans: inspectify.endpoints.Span[],
       analysis_data: (inspectify.endpoints.AnalysisData | null)
+    };
+    export type AnalysisExecution = {
+      id: driver.job.JobId
     };
     export type Program = {
       hash: ce_shell.io.Hash,
@@ -392,6 +415,7 @@ export namespace inspectify {
 }
 export const api = {
     generate: request<inspectify.endpoints.GenerateParams, ce_shell.io.Input>("json", "POST", "/generate", "json"),
+    generateChip: request<Record<string, never>, inspectify.endpoints.ChipProgram>("none", "GET", "/generate-chip", "json"),
     events: sse<[], inspectify.endpoints.Event>(() => `/events`, "json"),
     checkoCsv: request<Record<string, never>, string>("none", "GET", "/checko-csv", "text"),
     checkoPublic: sse<[], inspectify.endpoints.PublicEvent>(() => `/checko-public`, "json"),

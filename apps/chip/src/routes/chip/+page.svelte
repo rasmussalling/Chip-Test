@@ -40,6 +40,28 @@ fi
   let status: Status = $state('idle');
 
   let parse: ((src: string) => ParseResult) | null = $state(null);
+  let isFetching = $state(false);
+  let fetchError = $state<string | null>(null);
+
+  const fetchProgram = async () => {
+    isFetching = true;
+    fetchError = null;
+    try {
+      const res = await fetch('/api/input');
+      if (!res.ok) {
+        throw new Error(`Request failed: ${res.status}`);
+      }
+      const data = (await res.json()) as { program?: unknown };
+      if (typeof data.program !== 'string') {
+        throw new Error('Invalid response');
+      }
+      program = data.program;
+    } catch (err) {
+      fetchError = err instanceof Error ? err.message : 'Failed to fetch program';
+    } finally {
+      isFetching = false;
+    }
+  };
 
   $effect.pre(() => {
     const run = async () => {
@@ -166,6 +188,16 @@ fi
         {/if}
       {/if}
     </span>
+    {#if fetchError}
+      <span class="ml-4 text-base text-white/80">{fetchError}</span>
+    {/if}
+    <button
+      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
+      onclick={fetchProgram}
+      disabled={isFetching}
+    >
+      {isFetching ? 'Loading...' : 'Load from backend'}
+    </button>
   </div>
   <!-- <div>
     {#each result.assertions as triple}
