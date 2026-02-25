@@ -196,7 +196,7 @@ fi
       onclick={fetchProgram}
       disabled={isFetching}
     >
-      {isFetching ? 'Loading...' : 'Load from backend'}
+      {isFetching ? 'Loading...' : 'Generate'}
     </button>
   </div>
   <!-- <div>

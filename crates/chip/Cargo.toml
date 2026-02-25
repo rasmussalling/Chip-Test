@@ -21,10 +21,11 @@ tracing.workspace = true
 ce-core = { workspace = true, optional = true }
 gcl = { workspace = true, optional = true }
 rand = { workspace = true, optional = true }
+stdx = { workspace = true, optional = true }
 
 [features]
 default = []
-generate = ["ce-core", "gcl", "rand"]
+generate = ["ce-core", "gcl", "rand", "stdx"]
 
 [build-dependencies]
 lalrpop.workspace = true
