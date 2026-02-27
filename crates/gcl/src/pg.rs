@@ -258,6 +258,13 @@ impl ProgramGraph {
             .unwrap_or_default()
     }
 
+    pub fn incoming(&self, node: Node) -> Vec<&Edge> {
+    self.edges
+        .iter()
+        .filter(|edge| edge.to() == node)
+        .collect()
+    }
+
     pub fn fv(&self) -> IndexSet<Target> {
         self.edges.iter().flat_map(|e| e.action().fv()).collect()
     }

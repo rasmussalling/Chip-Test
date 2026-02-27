@@ -16,7 +16,7 @@ pub fn generate_sample_program() -> String {
     use gcl::{
         ast::{Commands, Int, TargetDef, Variable},
         interpreter::{Execution, InterpreterMemory, Step, TerminationState},
-        pg::{Determinism, Node},
+        pg::{Determinism, Node, Edge},
     };
     use rand::{rngs::ThreadRng, Rng};
     use ce_core::{
@@ -115,6 +115,10 @@ pub fn generate_sample_program() -> String {
 
     let post_cond = format!("{{{}}}", vec![post_a, post_b, post_c].join(" & "));
 
+    let final_node = Node::End;
+
+    let incoming_edges: Vec<&Edge> = pg.incoming(final_node);
+
     /*
     let mut mem = InterpreterMemory {
             variables: [
@@ -148,4 +152,5 @@ pub fn generate_sample_program() -> String {
     */
 
     format!("{}\n\n{}", string_program, post_cond)
+    
 }
