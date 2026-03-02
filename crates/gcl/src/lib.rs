@@ -7,3 +7,4 @@ pub mod memory;
 pub mod parse;
 pub mod pg;
 pub mod semantics;
+pub mod annotater;

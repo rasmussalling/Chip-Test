@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 use rand::{rngs::ThreadRng, Rng};  
 
-#[cfg(feature = "generate")]
-pub fn post_condition(pg: gcl::pg::ProgramGraph, rng: &mut ThreadRng) -> String {
-    use gcl::{
+use crate::{
         ast::{Commands, Int, TargetDef, Variable},
         interpreter::{Execution, InterpreterMemory, Step, TerminationState},
-        pg::{Determinism, Node, Edge},
+        pg::{Determinism, Node, Edge, ProgramGraph},
     };
+
+pub fn post_condition(pg: ProgramGraph, rng: &mut ThreadRng) -> String {
     
     let trace_length = 100;
 

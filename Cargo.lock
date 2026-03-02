@@ -1087,6 +1087,7 @@ dependencies = [
  "miette 7.6.0",
  "once_cell",
  "petgraph",
+ "rand 0.9.1",
  "serde",
  "stdx",
  "tapi",

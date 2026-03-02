@@ -17,6 +17,7 @@ pub fn generate_sample_program() -> String {
         ast::{Commands, Int, TargetDef, Variable},
         interpreter::{Execution, InterpreterMemory, Step, TerminationState},
         pg::{Determinism, Node, Edge},
+        annotater::post_condition,
     };
     use rand::{rngs::ThreadRng, Rng};
     use ce_core::{
@@ -57,6 +58,8 @@ pub fn generate_sample_program() -> String {
                 determinism,
                 &program.try_parse().expect("failed to parse generated program"),
             );
+
+    /*
 
     let mut values: HashMap<Variable, Vec<i32>> = HashMap::new();
 
@@ -114,6 +117,10 @@ pub fn generate_sample_program() -> String {
     let post_c = format!("c {} {}", gr_we_c, values.get(&Variable("c".into())).and_then(|vals| vals.get(rand_c)).unwrap_or(&0));
 
     let post_cond = format!("{{{}}}", vec![post_a, post_b, post_c].join(" & "));
+
+    */
+
+    let post_cond = post_condition(pg.clone(), &mut rng);
 
     let final_node = Node::End;
 
