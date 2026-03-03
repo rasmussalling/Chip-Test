@@ -17,7 +17,7 @@ pub fn generate_sample_program() -> String {
         ast::{Commands, Int, TargetDef, Variable},
         interpreter::{Execution, InterpreterMemory, Step, TerminationState},
         pg::{Determinism, Node, Edge},
-        annotater::post_condition,
+        annotater::{post_condition, annotate},
     };
     use rand::{rngs::ThreadRng, Rng};
     use ce_core::{
@@ -122,9 +122,7 @@ pub fn generate_sample_program() -> String {
 
     let post_cond = post_condition(pg.clone(), &mut rng);
 
-    let final_node = Node::End;
-
-    let incoming_edges: Vec<&Edge> = pg.incoming(final_node);
+    annotate(pg.clone(), post_cond, string_program)
 
     /*
     let mut mem = InterpreterMemory {
@@ -158,6 +156,6 @@ pub fn generate_sample_program() -> String {
     let result: String = exe.current_mem().variables.iter().map(|(v, val)| format!("{} = {}", v, val)).join(" & ");
     */
 
-    format!("{}\n\n{}", string_program, post_cond)
+    //format!("{}\n\n{}", string_program, post_cond)
     
 }
