@@ -43,7 +43,7 @@ pub fn generate_sample_program() -> String {
 
     let trace_length = 100;
 
-    let determinism = Determinism::Deterministic;
+    let determinism = Determinism::NonDeterministic;
 
     let mut rng = rand::rng();
 

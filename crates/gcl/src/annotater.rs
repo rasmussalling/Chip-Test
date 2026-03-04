@@ -4,7 +4,7 @@ use rand::{rngs::ThreadRng, Rng};
 use crate::{
     ast::{Target, Variable},
     interpreter::{Execution, InterpreterMemory},
-    pg::{Node, Edge, ProgramGraph, Action::Assignment},
+    pg::{Node, Edge, ProgramGraph, Action::{Assignment, Condition, Skip}},
     };
 
 pub fn post_condition(pg: ProgramGraph, rng: &mut ThreadRng) -> String {
@@ -66,7 +66,7 @@ pub fn post_condition(pg: ProgramGraph, rng: &mut ThreadRng) -> String {
     }
     let post_c = format!("c {} {}", gr_we_c, values.get(&Variable("c".into())).and_then(|vals| vals.get(rand_c)).unwrap_or(&0));
 
-    format!("{{{}}}", vec![post_a, post_b, post_c].join(" & "))
+    format!("{}", vec![post_a, post_b, post_c].join(" & "))
 
 }
 
@@ -77,39 +77,44 @@ pub fn annotate(pg: ProgramGraph, post_cond: String, program: String) -> String 
     
     let mut current_cond = post_cond.clone();
 
-    let mut total_cond = current_cond.clone();
+    let mut total_cond = format!("{{{}}}", current_cond.clone());
 
     let mut incoming_edges: Vec<&Edge> = pg.incoming(final_node);
 
     while incoming_edges.len() > 0 {
+
+        let next_node = incoming_edges[0].from();
+        let next_edges = pg.incoming(next_node);
         if incoming_edges.len() > 0 {
             match incoming_edges[0].action() {
                 Assignment(Target::Variable(var), val) => {
                     let var_name = &var.0;
                     current_cond = current_cond.replace(var_name, &format!("{}", val));
-                    total_cond = format!("{}\n{}", current_cond, total_cond);
+                    if next_edges.len() > 0 {
+                        match next_edges[0].action() {
+                            Condition(cond) => {}
+                            _ => total_cond = format!("{{{}}}\n{}", current_cond, total_cond),
+                        }
+                    } else {
+                        total_cond = format!("{{{}}}\n{}", current_cond, total_cond);
+                    }
                 }
                 Assignment(Target::Array(_, _), _) => current_cond = "unknown".to_string(),
+                Condition(cond) => {
+                    let cond_str = format!("{}", cond);
+                    let if_cond = format!("{} & ({})", current_cond, cond_str);
+                    total_cond = format!("{{{}}}\n{}", if_cond, total_cond);
+                }
                 _ => current_cond = "unknown".to_string(),
             }
         } else {
             break
         }
-        let next_node = incoming_edges[0].from();
-        incoming_edges = pg.incoming(next_node);
+        
+        incoming_edges = next_edges;
     };
 
     
 
     format!("{}\n\n{}", program, total_cond)
 }
-
-/*if var == &Variable("a".into()) {
-                    current_cond = current_cond.replace("a", &format!("{}", val));
-                } else if var == &Variable("b".into()) {
-                    current_cond = current_cond.replace("b", &format!("{}", val));
-                } else if var == &Variable("c".into()) {
-                    current_cond = current_cond.replace("c", &format!("{}", val));
-                } else {
-                    current_cond = "error".to_string();
-                }, */
