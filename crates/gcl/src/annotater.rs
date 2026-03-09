@@ -1,5 +1,5 @@
 use std::{collections::HashMap, vec};
-use rand::{rngs::ThreadRng, Rng};  
+use rand::{Rng, rand_core::le, rngs::ThreadRng};  
 use itertools::Itertools;
 
 use crate::{
@@ -76,9 +76,9 @@ pub fn annotate(pg: ProgramGraph, post_cond: String, program: String) -> String 
     let final_node = Node::End;
 
     
-    let mut current_cond = post_cond.clone();
+    let current_cond = post_cond.clone();
 
-    let mut total_cond: Vec<String> = vec![format!("{{{}}}\n", current_cond.clone())];
+    let mut total_cond: Vec<String> = vec![format!("{{{}}}", current_cond.clone())];
 /*
     let mut incoming_edges: Vec<&Edge> = pg.incoming(final_node);
 
@@ -121,7 +121,11 @@ pub fn annotate(pg: ProgramGraph, post_cond: String, program: String) -> String 
     let mut _end_node: Node = final_node.clone();
     (total_cond, _end_cond, _end_node) = make_pre_condition(pg.clone(), current_cond.clone(), total_cond.clone(), final_node, &Skip, false);
 
-    format!("{}\n\n{}", program, total_cond.iter().rev().join(""))
+    let annotated_program = place_annotations(total_cond.clone(), program.clone());
+
+    //format!("{}\n\n{}\n\n{}", annotated_program, program, total_cond.iter().rev().join(""))
+
+    format!("{}", annotated_program)
 }
 
 fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond: Vec<String>, cur_node: Node, action: &Action, g: bool) -> (Vec<String>, String, Node) {
@@ -141,7 +145,7 @@ fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond
                     //if next_edges.len() > 0 {
                         match next_edges[0].action() {
                             Condition(_cond) => {}
-                            _ => total_cond.push(format!("{{{}}}\n", current_cond.clone())),
+                            _ => total_cond.push(format!("{{{}}}", current_cond.clone())),
                         }
                     /*
                     } else {
@@ -167,19 +171,19 @@ fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond
                     if next_edges.len() > 0 {
                         match next_edges[0].action() {
                             Condition(_cond) => {}
-                            _ => total_cond.push(format!("{{{}}}\n", current_cond.clone())),
+                            _ => total_cond.push(format!("{{{}}}", current_cond.clone())),
                         }
                     } else {
-                        total_cond.push(format!("{{{}}}\n", current_cond.clone()));
+                        total_cond.push(format!("{{{}}}", current_cond.clone()));
                     }
                 }
                 Assignment(Target::Array(_, _), _) => current_cond = "unknown".to_string(),
                 Condition(cond) => {
                     let cond_str = format!("{}", cond);
                     let if_cond = format!("{} & ({})", current_cond, cond_str);
-                    total_cond.push(format!("{{{}}}\n", if_cond));
-                    if pg.outgoing_edges(next_node).len() < 1 {
-                        total_cond.push(format!("{{{}}}\n", current_cond.clone()));
+                    total_cond.push(format!("{{{}}}", if_cond));
+                    if pg.outgoing_edges(next_node).len() <= 1 {
+                        total_cond.push(format!("{{{}}}", current_cond.clone()));
                     }
                 }
                 _ => current_cond = "unknown".to_string(),
@@ -188,12 +192,12 @@ fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond
             for edge in incoming_edges.iter().rev() {
                 let mut guard_cond: String = String::new();
                 (total_cond, guard_cond, next_node) = make_pre_condition(pg.clone(), current_cond.clone(), total_cond.clone(), edge.from(), edge.action(), true);
-                guard_stack.push(guard_cond.clone());
+                guard_stack.push(format!("({})", guard_cond.clone()));
             }
-            let total_guard_cond: String = guard_stack.iter().join(" | ");
+            let total_guard_cond: String = guard_stack.iter().join(" & ");
             guard_stack.clear();
             current_cond = format!("{}", total_guard_cond);
-            total_cond.push(format!("{{{}}}\n", current_cond.clone()));
+            total_cond.push(format!("{{{}}}", current_cond.clone()));
         } else {
             break
         }
@@ -207,4 +211,117 @@ fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond
     };
 
     (total_cond, end_cond, next_node)
+}
+
+fn place_annotations (annotations: Vec<String>, program: String) -> String {
+    let mut annotated_program = String::new();
+    let mut annotation_iter = annotations.iter();
+    let mut annotation_stack: Vec<String> = vec![];
+    let mut last_annotation: String = String::new();
+
+    let mut indent_count: i32 = 0;
+    let mut last_if: bool = false;
+
+    if let Some(annotation) = annotation_iter.next() {
+        annotation_stack.push(annotation.clone());
+        annotated_program.push_str(&format!("{}\n", annotation));
+        last_annotation = annotation.clone();
+    }
+
+    for line in program.lines().rev() {
+        if line.trim().ends_with(";") && !line.trim().starts_with("fi") {
+            if let Some(annotation) = annotation_iter.next() {
+                let mut indent: String = "".to_string();
+                for _ in 0..indent_count {
+                    indent.push_str("\t");
+                }
+
+                annotated_program.push_str(&format!("{}\n", line));
+                annotated_program.push_str(&format!("{}{}\n", indent, annotation));
+
+                last_annotation = annotation.clone();
+            }
+            last_if = false;
+        } else if line.trim().starts_with("fi") {
+            indent_count += 1;
+            let mut indent: String = "".to_string();
+            for _ in 0..indent_count {
+                indent.push_str("\t");
+            }
+
+            annotated_program.push_str(&format!("{}\n", line));
+
+            annotated_program.push_str(&format!("{}{}\n", indent, last_annotation.clone()));
+            annotation_stack.push(last_annotation.clone());
+
+            last_if = false;
+        } else if line.trim().starts_with("if"){
+            if last_if {
+                let mut indent2: String = "".to_string();
+                for _ in 1..indent_count {
+                    indent2.push_str("\t");
+                };
+                if let Some(annotation) = annotation_iter.next() {
+                    annotated_program.push_str(&format!("{}{}\n", indent2, annotation));
+                }
+            }
+            if let Some(annotation) = annotation_iter.next() {
+                indent_count -= 1;
+
+                let mut indent: String = "".to_string();
+                for _ in 0..indent_count {
+                    indent.push_str("\t");
+                }
+
+                annotated_program.push_str(&format!("{}\n", line));
+                annotated_program.push_str(&format!("{}{}\n", indent, annotation));
+
+                last_annotation = annotation.clone();
+                annotation_stack.pop();
+            }
+            last_if = true;
+        } else if line.trim().starts_with("[") {
+            if last_if {
+                let mut indent2: String = "".to_string();
+                for _ in 1..indent_count {
+                    indent2.push_str("\t");
+                };
+                if let Some(annotation) = annotation_iter.next() {
+                    annotated_program.push_str(&format!("{}{}\n", indent2, annotation));
+                }
+            }
+
+            let mut indent: String = "".to_string();
+            for _ in 0..indent_count {
+                indent.push_str("\t");
+            }
+
+            annotated_program.push_str(&format!("{}\n", line));
+            annotated_program.push_str(&format!("{}{}\n", indent, annotation_stack.last().unwrap_or(&"".to_string())));
+
+            last_if = false;
+        } else {
+            if let Some(annotation) = annotation_iter.next() {
+                let mut indent: String = "".to_string();
+                for _ in 0..indent_count {
+                    indent.push_str("\t");
+                }
+
+                annotated_program.push_str(&format!("{}\n", line));
+                annotated_program.push_str(&format!("{}{}\n", indent, annotation));
+
+                last_annotation = annotation.clone();
+            }
+
+            last_if = false;
+        }
+        
+    };
+    /*if let Some(annotation) = annotation_iter.next() {
+        return format!("FUUUUUCKKKK")
+    }*/
+    for annotation in annotation_iter {
+        annotated_program.push_str(&format!("{}\n", annotation));
+    }
+    annotated_program.lines().rev().collect::<Vec<_>>().join("\n")
 }
