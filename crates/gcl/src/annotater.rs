@@ -1,5 +1,5 @@
 use std::{collections::HashMap, vec};
-use rand::{Rng, rand_core::le, rngs::ThreadRng};  
+use rand::{Rng, rand_core::le, rngs::ThreadRng, prelude::IndexedRandom};  
 use itertools::Itertools;
 
 use crate::{
@@ -17,14 +17,16 @@ pub fn post_condition(pg: ProgramGraph, rng: &mut ThreadRng) -> String {
     for _ in 0..10 {
         let mem = InterpreterMemory {
             variables: [
-                (Variable("a".to_string()), rng.random_range(-10..10)),
-                (Variable("b".to_string()), rng.random_range(-10..10)),
-                (Variable("c".to_string()), rng.random_range(-10..10)),
+                (Variable("x".to_string()), rng.random_range(-10..10)),
+                (Variable("y".to_string()), rng.random_range(-10..10)),
+                (Variable("z".to_string()), rng.random_range(-10..10)),
             ]
             .into_iter()
             .collect(),
             arrays: Default::default(),
         };
+
+        let initial_value = mem.clone();
 
         let mut exe = Execution::new(mem.clone());
 
@@ -42,10 +44,30 @@ pub fn post_condition(pg: ProgramGraph, rng: &mut ThreadRng) -> String {
         }
 
         for (var, val) in exe.current_mem().variables.iter() {
-            values.entry(var.clone()).or_default().push(*val);
+            if val != &initial_value.variables.get(var).cloned().unwrap_or(0) {
+                values.entry(var.clone()).or_default().push(*val);
+            }
         }
     }
 
+    let mut post_cond: Vec<String> = vec![];
+
+    for (var, vals) in values.iter() {
+        let rand_val = vals.choose(rng).unwrap_or(&0);
+        let gr_we = if rng.random_bool(0.5) { ">=" } else { "<=" };
+        post_cond.push(format!("{} {} {}", var.0, gr_we, rand_val));
+    }  
+
+    if post_cond.len() > 0 {
+        format!("{}", post_cond.iter().join(" & "))
+    } else {
+        format!("x = x & y = y & z = z")
+    }
+    
+    
+    
+
+    /*
     let rand_a = rng.random_range(0..9);
     let mut gr_we_a = ">=";
     if rand_a >= 5 {
@@ -68,7 +90,7 @@ pub fn post_condition(pg: ProgramGraph, rng: &mut ThreadRng) -> String {
     let post_c = format!("c {} {}", gr_we_c, values.get(&Variable("c".into())).and_then(|vals| vals.get(rand_c)).unwrap_or(&0));
 
     format!("{}", vec![post_a, post_b, post_c].join(" & "))
-
+    */
 }
 
 pub fn annotate(pg: ProgramGraph, post_cond: String, program: String) -> String {

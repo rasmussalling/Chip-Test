@@ -38,7 +38,7 @@ pub fn generate_sample_program() -> String {
         no_loops: true,
         no_division: false,
         no_unary_minus: false,
-        names: vec!["a".into(), "b".into(), "c".into()],
+        names: vec!["x".into(), "y".into(), "z".into()],
     };
 
     let trace_length = 100;
