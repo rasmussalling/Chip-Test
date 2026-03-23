@@ -416,6 +416,7 @@ export namespace inspectify {
 export const api = {
     generate: request<inspectify.endpoints.GenerateParams, ce_shell.io.Input>("json", "POST", "/generate", "json"),
     generateChip: request<Record<string, never>, inspectify.endpoints.ChipProgram>("none", "GET", "/generate-chip", "json"),
+    generateChipChallenge: request<Record<string, never>, inspectify.endpoints.ChipProgram>("none", "GET", "/generate-chip-challenge", "json"),
     events: sse<[], inspectify.endpoints.Event>(() => `/events`, "json"),
     checkoCsv: request<Record<string, never>, string>("none", "GET", "/checko-csv", "text"),
     checkoPublic: sse<[], inspectify.endpoints.PublicEvent>(() => `/checko-public`, "json"),

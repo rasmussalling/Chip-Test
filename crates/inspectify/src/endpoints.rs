@@ -26,6 +26,7 @@ pub fn endpoints() -> tapi::endpoints::Endpoints<'static, AppState> {
     tapi::endpoints::Endpoints::new([
         &generate::endpoint as E,
         &generate_chip::endpoint as E,
+        &generate_chip_challenge::endpoint as E,
         &events::endpoint as E,
         &checko_csv::endpoint as E,
         &checko_public::endpoint as E,
@@ -55,6 +56,12 @@ struct ChipProgram {
 #[tapi::tapi(path = "/generate-chip", method = Get)]
 async fn generate_chip() -> Json<ChipProgram> {
     let program = chip::generate_sample_program();
+    Json(ChipProgram { program })
+}
+
+#[tapi::tapi(path = "/generate-chip-challenge", method = Get)]
+async fn generate_chip_challenge() -> Json<ChipProgram> {
+    let program = chip::generate_challenge();
     Json(ChipProgram { program })
 }
 

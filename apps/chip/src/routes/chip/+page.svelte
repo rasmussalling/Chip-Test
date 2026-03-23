@@ -43,11 +43,11 @@ fi
   let isFetching = $state(false);
   let fetchError = $state<string | null>(null);
 
-  const fetchProgram = async () => {
+  const fetchProgram = async (endpoint: '/api/input' | '/api/challenge') => {
     isFetching = true;
     fetchError = null;
     try {
-      const res = await fetch('/api/input');
+      const res = await fetch(endpoint);
       if (!res.ok) {
         throw new Error(`Request failed: ${res.status}`);
       }
@@ -62,6 +62,9 @@ fi
       isFetching = false;
     }
   };
+
+  const fetchChallenge = async () => fetchProgram('/api/challenge');
+  const fetchExample = async () => fetchProgram('/api/input');
 
   $effect.pre(() => {
     const run = async () => {
@@ -193,10 +196,17 @@ fi
     {/if}
     <button
       class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
-      onclick={fetchProgram}
+      onclick={fetchExample}
       disabled={isFetching}
     >
-      {isFetching ? 'Loading...' : 'Generate'}
+      {isFetching ? 'Loading...' : 'Example'}
+    </button>
+    <button
+      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
+      onclick={fetchChallenge}
+      disabled={isFetching}
+    >
+      {isFetching ? 'Loading...' : 'Challenge'}
     </button>
   </div>
   <!-- <div>
