@@ -3,7 +3,7 @@ name: Deploy GitHub Pages
 on:
   push:
     branches: ["main"]
-    workflow_dispatch:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -50,6 +50,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          external_repository: team-checkr/team-checkr.github.io
+          external_repository: rasmussalling/rasmussalling.github.io
           publish_branch: main
           publish_dir: apps/chip/build/
+          destination_dir: chip
