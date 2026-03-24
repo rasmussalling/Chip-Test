@@ -16,7 +16,7 @@ dist = true
 axum.workspace = true
 ce-core.workspace = true
 ce-shell.workspace = true
-chip = { workspace = true, features = ["generate"] }
+chip = { workspace = true }
 chrono.workspace = true
 clap.workspace = true
 color-eyre.workspace = true

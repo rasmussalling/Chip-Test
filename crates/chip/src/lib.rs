@@ -10,10 +10,7 @@ pub mod triples;
 
 pub use smtlib;
 
-#[cfg(feature = "generate")]
-pub fn generate_sample_program() -> String {
-
-    use gcl::{
+  use gcl::{
         ast::Commands,
         pg::Determinism,
         annotater::{post_condition, annotate},
@@ -25,6 +22,10 @@ pub fn generate_sample_program() -> String {
             rand::{self},
         };
     use stdx::stringify::Stringify;
+
+pub fn generate_sample_program() -> String {
+
+  
     
     let mut custom_ctx = GclGenContext {
         fuel: 4,
@@ -57,20 +58,9 @@ pub fn generate_sample_program() -> String {
     annotate(pg.clone(), post_cond, string_program)
 }
 
-#[cfg(feature = "generate")]
+
 pub fn generate_challenge() -> String {
-    use gcl::{
-        ast::Commands,
-        pg::Determinism,
-        annotater::post_condition,
-    };
-    use rand::{rngs::ThreadRng, Rng};
-    use ce_core::{
-            Generate, 
-            gn::GclGenContext,
-            rand::{self},
-        };
-    use stdx::stringify::Stringify;
+   
     
     let mut custom_ctx = GclGenContext {
         fuel: 4,

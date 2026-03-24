@@ -3,6 +3,8 @@
 use std::collections::HashMap;
 
 use chip::{
+    generate_challenge as generate_chip_challenge,
+    generate_sample_program,
     model_check::{ReachableStates, State},
     parse::SourceSpan,
     smtlib,
@@ -212,6 +214,16 @@ pub fn parse(src: &str) -> ParseResult {
             is_fully_annotated: false,
         },
     }
+}
+
+#[wasm_bindgen(js_name = generateSampleProgram)]
+pub fn generate_sample_program_wasm() -> String {
+    generate_sample_program()
+}
+
+#[wasm_bindgen(js_name = generateChallenge)]
+pub fn generate_challenge_wasm() -> String {
+    generate_chip_challenge()
 }
 
 #[derive(Debug, Clone, Serialize, Tsify)]

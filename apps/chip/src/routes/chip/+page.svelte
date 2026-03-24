@@ -40,37 +40,42 @@ fi
   let status: Status = $state('idle');
 
   let parse: ((src: string) => ParseResult) | null = $state(null);
-  let isFetching = $state(false);
   let fetchError = $state<string | null>(null);
+  let generateSampleProgram: (() => string) | null = $state(null);
+  let generateChallenge: (() => string) | null = $state(null);
 
-  const fetchProgram = async (endpoint: '/api/input' | '/api/challenge') => {
-    isFetching = true;
+  const fetchChallenge = () => {
+    if (!generateChallenge) return;
     fetchError = null;
     try {
-      const res = await fetch(endpoint);
-      if (!res.ok) {
-        throw new Error(`Request failed: ${res.status}`);
-      }
-      const data = (await res.json()) as { program?: unknown };
-      if (typeof data.program !== 'string') {
-        throw new Error('Invalid response');
-      }
-      program = data.program;
+      program = generateChallenge();
     } catch (err) {
-      fetchError = err instanceof Error ? err.message : 'Failed to fetch program';
-    } finally {
-      isFetching = false;
+      fetchError = err instanceof Error ? err.message : 'Failed to generate challenge';
     }
   };
 
-  const fetchChallenge = async () => fetchProgram('/api/challenge');
-  const fetchExample = async () => fetchProgram('/api/input');
+  const fetchExample = () => {
+    if (!generateSampleProgram) return;
+    fetchError = null;
+    try {
+      program = generateSampleProgram();
+    } catch (err) {
+      fetchError = err instanceof Error ? err.message : 'Failed to generate sample program';
+    }
+  };
 
   $effect.pre(() => {
     const run = async () => {
-      const { default: init, parse: parseFn } = await import('chip-wasm');
-      await init();
-      parse = parseFn;
+      const wasm = (await import('chip-wasm')) as unknown as {
+        default: () => Promise<void>;
+        parse: (src: string) => ParseResult;
+        generateSampleProgram: () => string;
+        generateChallenge: () => string;
+      };
+      await wasm.default();
+      parse = wasm.parse;
+      generateSampleProgram = wasm.generateSampleProgram;
+      generateChallenge = wasm.generateChallenge;
     };
     run().catch(console.error);
   });
@@ -197,16 +202,16 @@ fi
     <button
       class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
       onclick={fetchExample}
-      disabled={isFetching}
+      disabled={!generateSampleProgram}
     >
-      {isFetching ? 'Loading...' : 'Example'}
+      Example
     </button>
     <button
       class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
       onclick={fetchChallenge}
-      disabled={isFetching}
+      disabled={!generateChallenge}
     >
-      {isFetching ? 'Loading...' : 'Challenge'}
+      Challenge
     </button>
   </div>
   <!-- <div>

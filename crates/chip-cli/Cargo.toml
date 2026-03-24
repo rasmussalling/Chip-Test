@@ -17,7 +17,7 @@ dist = true
 [dependencies]
 camino.workspace = true
 ce-core.workspace = true
-chip = { workspace = true, features = ["generate"] }
+chip.workspace = true
 clap.workspace = true
 color-eyre.workspace = true
 gcl.workspace = true

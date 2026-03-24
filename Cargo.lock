@@ -369,7 +369,6 @@ dependencies = [
  "serde_json",
  "tapi",
  "thiserror 2.0.12",
- "tokio",
  "tracing",
 ]
 
@@ -3126,7 +3125,6 @@ name = "tapi"
 version = "0.1.0"
 source = "git+https://github.com/oeb25/tapi.git#25c4068cef6aa56d0ef5fd0a00f9cda15879809b"
 dependencies = [
- "axum",
  "chrono",
  "dyn-clone",
  "futures-util",
