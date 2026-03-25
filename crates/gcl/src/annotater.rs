@@ -250,6 +250,8 @@ fn place_annotations (annotations: Vec<String>, program: String) -> String {
             annotated_program.push_str(&format!("{}\n", line));
             annotated_program.push_str(&format!("{}{}\n", indent, annotation_stack.last().unwrap_or(&"".to_string())));
 
+            last_annotation = annotation_stack.last().unwrap_or(&"".to_string()).clone();
+            
             last_if = false;
         } else {
             if let Some(annotation) = annotation_iter.next() {
