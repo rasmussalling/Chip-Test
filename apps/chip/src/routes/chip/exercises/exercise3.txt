@@ -1,0 +1,10 @@
+// Goal: Compute n!
+// TODO: Annotate loop invariant to compute factorial
+r := 1;
+i := 1;
+do [I]
+  i <= n ->
+    r := r * i;
+    i := i + 1
+od
+{r = n!}

@@ -213,6 +213,18 @@ fi
     >
       Challenge
     </button>
+
+    <button
+      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
+      onclick={async () => {
+        const res = await fetch('/chip');
+        if (res.ok) {
+          program = await res.text();
+        }
+      }}
+    >
+      Loops
+    </button>
   </div>
   <!-- <div>
     {#each result.assertions as triple}

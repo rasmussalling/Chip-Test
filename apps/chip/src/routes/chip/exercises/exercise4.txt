@@ -1,0 +1,10 @@
+// Goal: Compute r = x * y using repeated addition
+// TODO: Annotate loop invariant
+r := 0;
+i := 0;
+do [I]
+  i != y ->
+    r := r + x;
+    i := i + 1
+od
+{i = y & r = x * y}

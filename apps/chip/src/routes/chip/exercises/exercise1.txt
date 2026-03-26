@@ -1,0 +1,8 @@
+// Goal: Compute r = a * n using repeated addition
+// TODO: Make the program fully annotated and verified
+do [I]
+  i != n ->
+    r := r + a;
+    i := i + 1
+od
+{i = n & r = a * n}

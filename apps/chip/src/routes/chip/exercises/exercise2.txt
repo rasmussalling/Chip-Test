@@ -1,0 +1,10 @@
+// Goal: Compute the sum of numbers from 1 to n
+// TODO: Annotate loop invariant to compute sum
+r := 0;
+i := 1;
+do [I]
+  i <= n ->
+    r := r + i;
+    i := i + 1
+od
+{r = n * (n + 1) / 2}
