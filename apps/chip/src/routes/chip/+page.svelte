@@ -43,6 +43,20 @@ fi
   let fetchError = $state<string | null>(null);
   let generateSampleProgram: (() => string) | null = $state(null);
   let generateChallenge: (() => string) | null = $state(null);
+  
+  //---
+  const modules = import.meta.glob('./exercises/*.txt', { as: 'raw', eager: true });
+  const exerciseFiles = Object.values(modules) as string[];
+
+  const fetchRandomLoop = () => {
+    if (exerciseFiles.length === 0) {
+      fetchError = 'No loop exercises available';
+      return;
+    }
+    program = exerciseFiles[Math.floor(Math.random() * exerciseFiles.length)];
+    fetchError = null;
+  };
+  //---
 
   const fetchChallenge = () => {
     if (!generateChallenge) return;
@@ -216,15 +230,11 @@ fi
 
     <button
       class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
-      onclick={async () => {
-        const res = await fetch('/chip');
-        if (res.ok) {
-          program = await res.text();
-        }
-      }}
+      onclick={fetchRandomLoop}
     >
       Loops
     </button>
+    
   </div>
   <!-- <div>
     {#each result.assertions as triple}
