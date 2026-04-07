@@ -84,7 +84,7 @@
     </label>
     <input class="hidden" type="checkbox" name="theme" id="theme" bind:checked={darkTheme} />
   </div>
-  <a href="/grammar" class="flex items-center space-x-1 p-2" onclick={toggleGrammar}>
+  <a href="/guide" class="flex items-center space-x-1 p-2" onclick={toggleGrammar}>
     <span>Grammar</span>
     <QuestionMarkCircle />
   </a>
