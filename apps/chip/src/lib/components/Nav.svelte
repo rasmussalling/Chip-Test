@@ -6,6 +6,7 @@
   import QuestionMarkCircle from '~icons/heroicons/question-mark-circle';
   import type { Component } from 'svelte';
   import type { SvelteHTMLElements } from 'svelte/elements';
+  import Grammar from './Grammar.svelte';
   import Guide from './Guide.svelte';
 
   interface Props {
@@ -15,7 +16,13 @@
 
   let { title, Icon }: Props = $props();
 
+  let showGrammar = $state(false);
   let showGuide = $state(false);
+
+  const toggleGrammar = (e: MouseEvent) => {
+    e.preventDefault();
+    showGrammar = !showGrammar;
+  };
 
   const toggleGuide = (e: MouseEvent) => {
     e.preventDefault();
@@ -33,6 +40,16 @@
 
   $effect(() => {
     const listener = (e: KeyboardEvent) => {
+      if (showGrammar && e.key == 'Escape') {
+        showGrammar = false;
+      }
+    };
+    window.addEventListener('keydown', listener);
+
+    return () => window.removeEventListener('keydown', listener);
+  });
+  $effect(() => {
+    const listener = (e: KeyboardEvent) => {
       if (showGuide && e.key == 'Escape') {
         showGuide = false;
       }
@@ -41,6 +58,7 @@
 
     return () => window.removeEventListener('keydown', listener);
   });
+
 </script>
 
 <nav class="flex items-center space-x-2 bg-slate-900 px-2 text-slate-200">
@@ -66,11 +84,30 @@
     </label>
     <input class="hidden" type="checkbox" name="theme" id="theme" bind:checked={darkTheme} />
   </div>
+  <a href="/grammar" class="flex items-center space-x-1 p-2" onclick={toggleGrammar}>
+    <span>Grammar</span>
+    <QuestionMarkCircle />
+  </a>
   <a href="/guide" class="flex items-center space-x-1 p-2" onclick={toggleGuide}>
     <span>Guide</span>
     <QuestionMarkCircle />
   </a>
 </nav>
+
+{#if showGrammar}
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div class="z-100 fixed inset-0 grid place-items-center" onclick={() => (showGrammar = false)}>
+    <div
+      class="relative max-h-[80vh] overflow-auto rounded-xl bg-slate-800 shadow-2xl"
+      onclick={(e) => e.stopPropagation()}
+    >
+      <div class="px-10 py-5">
+        <Grammar />
+      </div>
+    </div>
+  </div>
+{/if}
 
 {#if showGuide}
   <!-- svelte-ignore a11y_click_events_have_key_events -->

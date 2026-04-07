@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Guide from '$lib/components/Guide.svelte';
+  import Grammar from '$lib/components/Grammar.svelte';
   import Nav from '$lib/components/Nav.svelte';
   import Icon from '~icons/heroicons/book-open';
 </script>
@@ -12,5 +12,5 @@
 <Nav title="Guide" {Icon}></Nav>
 
 <div class="py-10">
-  <Guide />
+  <Grammar />
 </div>
