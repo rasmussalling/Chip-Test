@@ -89,6 +89,9 @@ pub fn generate_challenge() -> String {
             );
 
     let post_cond = post_condition(pg.clone(), &mut rng);
+
+    let challenge_text: String = "//TODO: Fully annotate the following program".to_string();
+
     
-    format!("{}\n\n{{{}}}", string_program, post_cond)
+    format!("{}\n{}\n\n{{{}}}", challenge_text, string_program, post_cond)
 }
