@@ -181,6 +181,8 @@ fi
   <div
     class="flex items-center p-2 text-2xl text-white transition duration-500 {parseError
       ? 'bg-purple-600'
+      : status === 'verified' && !result.is_fully_annotated 
+      ? 'bg-emerald-400' 
       : {
           idle: 'bg-gray-500',
           verifying: 'bg-yellow-500',
