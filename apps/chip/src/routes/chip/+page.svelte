@@ -47,6 +47,15 @@ fi
   const modules = import.meta.glob('./exercises/*.txt', { as: 'raw', eager: true });
   const exerciseFiles = Object.values(modules) as string[];
 
+  // In the exercises folder - You can add loop exercises as .txt files with a comment at the top like:
+  // Algorithm: ... to have a nice label in the dropdown
+  let loopOptions = $state(exerciseFiles.map((content, index) => {
+    const lines = content.split('\n');
+    const algorithmLine = lines.find(line => line.startsWith('// Algorithm:'));
+    const label = algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : `Exercise ${index + 1}`;
+    return { label, content };
+  }));
+
   const fetchRandomLoop = () => {
     if (exerciseFiles.length === 0) {
       fetchError = 'No loop exercises available';
@@ -232,12 +241,20 @@ fi
       Challenge
     </button>
 
-    <button
-      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
-      onclick={fetchRandomLoop}
+    <select
+      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
+      onchange={(e) => {
+        const target = e.target as HTMLSelectElement;
+        const selected = loopOptions.find(opt => opt.label === target.value);
+        if (selected) program = selected.content;
+        target.selectedIndex = 0;
+      }}
     >
-      Loops
-    </button>
+      <option disabled selected>Loops</option>
+      {#each loopOptions as option}
+        <option value={option.label}>{option.label}</option>
+      {/each}
+    </select>
     
   </div>
   <!-- <div>

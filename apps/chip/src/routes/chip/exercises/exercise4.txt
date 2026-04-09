@@ -1,10 +1,17 @@
-// Goal: Compute r = x * y using repeated addition
-// TODO: Annotate loop invariant
-r := 0;
-i := 0;
-do [I]
-  i != y ->
-    r := r + x;
-    i := i + 1
+// Algorithm: Triangular Numbers
+/*
+  Your good friend says that this program computes the sum of the first n natural numbers - 
+  However he's not used to writing GCL and his program does not parse.
+  t = 1 + 2 + ... + n
+  TODO: Fix his program and prove that the algorithm is correct for all inputs
+*/
+
+i := 0
+t := 0
+n := 3
+
+do while [i != n]:
+    i := i + 1;
+    t := t + i + 1
 od
-{i = y & r = x * y}
+{i = n & t := 1 + 2 + ... + n}

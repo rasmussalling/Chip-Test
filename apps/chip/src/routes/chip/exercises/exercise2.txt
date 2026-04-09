@@ -1,10 +1,14 @@
-// Goal: Compute the sum of numbers from 1 to n
-// TODO: Annotate loop invariant to compute sum
-r := 0;
-i := 1;
+// Algorithm: Sum of squares
+/*
+  In this program we compute 1^2 + 2^2 + ... + n^2
+  TODO: Make the program fully annotated and verified
+*/
+
+{ i = 0 & s = 0}
 do [I]
-  i <= n ->
-    r := r + i;
-    i := i + 1
+  i != n ->
+    i := i + 1;
+    s := s + i * i
 od
-{r = n * (n + 1) / 2}
+
+{ i = n & s = n * (n + 1) * (2 * n + 1) / 6 }

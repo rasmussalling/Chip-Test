@@ -1,5 +1,9 @@
-// Goal: Compute r = a * n using repeated addition
-// TODO: Make the program fully annotated and verified
+// Algorithm: Repeated addition
+/*
+  In this program we compute a * n using repeated addition
+  TODO: Make the program fully annotated and verified
+*/
+
 do [I]
   i != n ->
     r := r + a;
