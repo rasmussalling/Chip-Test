@@ -12,9 +12,10 @@
   interface Props {
     title: string;
     Icon: Component<SvelteHTMLElements['svg']>;
+    onProgramChange?: (prog: string) => void;
   }
 
-  let { title, Icon }: Props = $props();
+  let { title, Icon, onProgramChange }: Props = $props();
 
   let showGrammar = $state(false);
   let showGuide = $state(false);
@@ -118,7 +119,7 @@
       onclick={(e) => e.stopPropagation()}
     >
       <div class="px-10 py-5">
-        <Guide />
+        <Guide {onProgramChange} onClose={() => showGuide = false} />
       </div>
     </div>
   </div>

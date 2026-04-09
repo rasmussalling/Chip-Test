@@ -44,7 +44,6 @@ fi
   let generateSampleProgram: (() => string) | null = $state(null);
   let generateChallenge: (() => string) | null = $state(null);
   
-  //---
   const modules = import.meta.glob('./exercises/*.txt', { as: 'raw', eager: true });
   const exerciseFiles = Object.values(modules) as string[];
 
@@ -56,7 +55,10 @@ fi
     program = exerciseFiles[Math.floor(Math.random() * exerciseFiles.length)];
     fetchError = null;
   };
-  //---
+
+  const handleProgramChange = (newProgram: string) => {
+    program = newProgram;
+  };
 
   const fetchChallenge = () => {
     if (!generateChallenge) return;
@@ -174,7 +176,7 @@ fi
   <meta name="description" content="Chip" />
 </svelte:head>
 
-<Nav title="Chip" {Icon} />
+<Nav title="Chip" {Icon} onProgramChange={handleProgramChange} />
 
 <div class="relative grid grid-rows-[2fr_auto_auto] overflow-hidden bg-slate-800">
   <Editor bind:value={program} markers={[...result.markers, ...verifications]} />
