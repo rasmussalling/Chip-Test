@@ -21,6 +21,23 @@
     page = (page + 1) % pages.length;
   };
 
+  const getQuizByPage = (page: number) => {
+    switch (page) {
+      case 1:
+        return quizzes.assignQuiz;
+      case 2:
+        return quizzes.seqQuiz;
+      case 3:
+        return quizzes.skipQuiz;
+      case 5:
+        return quizzes.condQuiz;
+      case 6:
+        return `Check the loop examples in the dropdown in the right corner!`;
+      default:
+        return `No Quiz for this page`;
+    }
+  };
+  
   onMount(() => {
     container?.focus();
   });
@@ -39,13 +56,13 @@
 
     <Katex math={pages[page].math} displayMode={true} />
 
-    {#if page === 1 && onProgramChange}
+    {#if page > 0 && page !== 4 && onProgramChange}
       <div class="pt-4">
         <button
           class="rounded bg-blue-600 px-3 py-2 text-sm text-white transition hover:bg-blue-500"
           type="button"
           onclick={() => {
-            onProgramChange(quizzes.assignQuiz);
+            onProgramChange(getQuizByPage(page));
             onClose?.();
           }}
         >

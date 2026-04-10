@@ -7,6 +7,28 @@ x := z + y;
 y := y + 1
 { x > 10 & y > 5 }
 `,
+seqQuiz:
+`// TODO: Fully annotate the program
+{ x > 5 }
+y := x + 2; x := y - 1
+{ x > 6 }
+`,
+skipQuiz:
+`// TODO: Fully annotate the program
+{ x > 0 } 
+skip
+{ ? }
+`,
+condQuiz:
+`// TODO: Fully annotate the program
+{ x > 0 }
+if (x > 5) ->
+  y := x - 2
+[] (x <= 5) ->
+  y := x + 1
+fi
+{ y > 1 }
+`,
 }
 
 const assign = `\\frac{ }{\\{Q[a/x]\\} \\ x := a \\ \\{Q\\}} \\quad \\text{[assign]}`;
@@ -14,6 +36,13 @@ const seq = `\\frac{\\{P\\} C_1 \\{R\\} \\quad \\{R\\} C_2 \\{Q\\}}{\\{P\\} \\ C
 const skip = `\\frac{ }{\\{Q\\} \\ \\text{skip} \\ \\{Q\\}} \\quad \\text{[skip]}`;
 const cons = `\\frac{P \\models P' \\quad \\{P'\\} C \\{Q'\\} \\quad Q' \\models Q}{\\{P\\} \\ C \\ \\{Q\\}} \\quad \\text{[cons]}`;
 const cond = `\\frac{\\{P \\land b_1\\} C_1 \\{Q\\} \\quad \\cdots \\quad \\{P \\land b_n\\} C_n \\{Q\\}}{\\{P\\} \\ \\text{if } b_1 \\rightarrow C_1 \\ [] \\ \\cdots \\ [] \\ b_n \\rightarrow C_n \\ \\text{fi} \\ \\{Q\\}} \\quad \\text{[cond]}`;
+const loop = `
+    \\frac
+    { \\{I \\land b_1\\} C_1 \\{I\\} \\quad \\cdots \\quad \\{I \\land b_n\\} C_n \\{I\\}} 
+    { \\{I\\} \\ \\text{do } b_1 \\rightarrow \\{I \\land b_1\\} C_1 \\{I\\} \\ [] \\ \\cdots \\ [] \\ b_n \\rightarrow C_n \\ \\text{od} \\ \\{I \\land \\neg b_1 \\land \\cdots \\land \\neg b_n\\}} 
+    \\quad \\text{[loop]}
+  `;
+
 
 export const pages = [
     {
@@ -25,7 +54,8 @@ export const pages = [
         ${seq} \\\\[12pt]
         ${skip} \\\\[12pt]
         ${cons} \\\\[12pt]
-        ${cond}
+        ${cond} \\\\[12pt]
+        ${loop}
       \\end{gather*}
       `,
     },
@@ -97,6 +127,14 @@ export const pages = [
       \\end{gather*}
       `,
     },
+    {
+      title: 'Loop Rule',
+      math: `
+      \\begin{gather*}
+        ${loop}
+      \\end{gather*}
+      `,
+    },    
   ];
 
 
