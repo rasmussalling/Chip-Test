@@ -290,7 +290,65 @@ export const pages = [
         &\\text{3. When the loop terminates, I and the negation of the loop condition holds}
       \\end{aligned}
       \\\\[12pt]
-      \\textbf{Finding the invariant:}\\\\
+      \\textbf{Given the program:}\\\\
+      \\begin{aligned}
+        &r := 1; \\\\
+        &i := 0; \\\\
+        &\\text{do }[false] \\\\
+        &\\quad i \\neq n \\rightarrow \\\\
+        &\\quad \\quad r := e \\cdot r; \\\\
+        &\\quad \\quad i := i + 1; \\\\
+        &\\text{od}\\\\
+        &\\{i = n \\land r = \\text{exp}(e, n)\\}
+      \\end{aligned}
+      \\\\[12pt]
+      \\textbf{Find an invariant I}
+      \\\\[8pt]
+      \\text{Initially:}\\\\
+      i = 0 \\text{ and } r = 1 = e^0 \\\\[8pt]
+      \\text{Each loop iteration } r \\text{ is multiplied by } e \\text{ and } i \\text{ increases by 1} \\\\[8pt]
+
+      \\begin{aligned}
+        &1 \\text{ iteration: } &&r = e^1 \\\\
+        &2 \\text{ iterations: } &&r = e \\cdot e = e^2 \\\\
+        &3 \\text{ iterations: } &&r = e^2 \\cdot e = e^3 \\\\
+      \\end{aligned}
+      \\\\[8pt]
+      \\begin{aligned}
+        \\boxed{r = \\text{exp}(e, i)}
+      \\end{aligned}
+      \\\\[16pt]
+      \\textbf{Proof by mathematical induction:}\\\\
+      \\text{Base case: } \\\\
+      \\begin{aligned}
+        &i = 0 \\\\
+        &r = 1 = e^i = e^0 = 1
+      \\end{aligned} 
+      \\\\
+      \\checkmark \\\\[8pt]
+      \\text{Inductive step: }\\\\
+      \\begin{aligned}
+        &r = e^k\\\\
+        &r' = e \\cdot r = e \\cdot e^k = e^{k + 1} \\\\
+        &i' = k + 1\\\\
+        &r' = e^{i'}
+      \\end{aligned}
+      \\\\
+      \\checkmark\\\\ 
+      \\textbf{Lastly we reason that } i \\text{ stays in a known domain}\\\\
+      0 \\leq i \\leq n \\\\[12pt]
+      \\textbf{Final program:}\\\\
+      \\begin{aligned}
+        &r := 1; \\\\
+        &i := 0; \\\\
+        &\\text{do }[0 \\leq i \\ \\land i \\leq n \\ \\land r = \\text{exp}(e, i)] \\\\
+        &\\quad i \\neq n \\rightarrow \\\\
+        &\\quad \\quad r := e \\cdot r; \\\\
+        &\\quad \\quad i := i + 1; \\\\
+        &\\text{od}\\\\
+        &\\{i = n \\land r = \\text{exp}(e, n)\\}
+      \\end{aligned}
+
       `,
     },    
   ];
