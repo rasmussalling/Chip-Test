@@ -97,33 +97,183 @@ export const pages = [
     {
       title: 'Sequence Rule',
       math: `
-      \\begin{gather*}
-        ${seq}
-      \\end{gather*}
+      \\boxed{${seq}}
+      \\\\[8pt]
+
+      \\textbf{Goal: Find the intermediate assertion}
+      \\\\[8pt]
+
+      \\begin{aligned}
+        &\\{\\ x > 5\\ \\} \\\\
+        &x := x + 1; \\\\
+        &y := x * 2 \\\\
+        &\\{y > 12\\}
+      \\end{aligned}
+
+      \\\\[12pt]
+
+      \\textbf{Use assignment rule to find the intermediate assertion}
+      \\\\[8pt]
+
+      \\begin{aligned}
+        &\\{x > 5\\} \\\\
+        &x := x + 1 \\\\
+        &\\{x * 2 > 12\\} \\\\
+        &y := x * 2 \\\\
+        &\\{y > 12\\}
+      \\end{aligned}
+
+      \\\\[12pt]
+
+      \\textbf{Get final result by reducing the assertion}
+      \\\\[8pt]
+      \\begin{aligned}
+        &\\{x > 5\\} \\\\
+        &x := x + 1 \\\\
+        &\\{x > 6\\} \\\\
+        &\\{x * 2 > 12\\} \\\\
+        &y := x * 2 \\\\
+        &\\{y > 12\\}
+      \\end{aligned}
       `,
     },
     {
       title: 'Skip Rule',
       math: `
-      \\begin{gather*}
-        ${skip}
-      \\end{gather*}
+      \\boxed{${skip}}
+      \\\\[8pt]
+
+      \\textbf{Skip does not change the state, so the precondition and postcondition are the same}
+      \\\\[8pt]
+
+      \\begin{aligned}
+        &\\{\\ z > \\text{exp}(3, i)\\ \\} \\\\
+        &\\text{skip}; \\\\
+        &\\{\\ z > \\text{exp}(3, i)\\ \\}
+      \\end{aligned}
       `,
     },
     {
       title: 'Consequence Rule',
       math: `
-      \\begin{gather*}
-        ${cons}
-      \\end{gather*}
+      \\boxed{${cons}}
+      \\\\[8pt]
+      \\textbf{Goal: Strengthen the precondition and weaken the postcondition}
+      \\\\[8pt]
+
+      \\begin{aligned}
+        &\\{x > 5\\} \\\\
+        &x := x + 1 \\\\
+        &\\{x > 6\\}
+      \\end{aligned}
+
+      \\\\[12pt]
+
+      \\textbf{We want:}
+      \\\\[8pt]
+
+      \\begin{aligned}
+        &\\{x > 10\\} \\\\
+        &x := x + 1 \\\\
+        &\\{x > 0\\}
+      \\end{aligned}
+
+      \\\\[12pt]
+
+      \\textbf{Check implications}
+      \\\\[6pt]
+
+      \\text{P: } x > 10 \\Rightarrow x > 5
+      \\\\[4pt]
+      \\text{Q: } x > 6 \\Rightarrow x > 0
+
+      \\\\[12pt]
+
+      \\textbf{Apply consequence rule}
+      \\\\[8pt]
+
+      \\begin{aligned}
+        &x > 10 \\ \\models \\ x > 5 \\\\
+        &\\{x > 5\\} \\ x := x + 1 \\ \\{x > 6\\} \\\\
+        &x > 6 \\ \\models \\ x > 0
+      \\end{aligned}
+
+      \\\\[12pt]
+
+      \\textbf{Final result:}
+      \\\\[8pt]
+
+      \\begin{aligned}
+        &\\{x > 10\\} \\\\
+        &x := x + 1 \\\\
+        &\\{x > 0\\}
+      \\end{aligned}
       `,
     },
     {
       title: 'Conditional Rule',
       math: `
-      \\begin{gather*}
-        ${cond}
-      \\end{gather*}
+      \\boxed{${cond}}
+      \\\\[8pt]
+
+      \\textbf{Goal: Verify each branch preserves Q}
+      \\\\[8pt]
+
+      \\textbf{Given program:}
+      \\\\[6pt]
+
+      \\begin{aligned}
+        &\\text{if } (x > 0) \\rightarrow \\\\
+        &\\quad x := x - 1 \\\\
+        &[] \\ (x \\leq 0) \\rightarrow \\\\
+        &\\quad x := x + 1 \\\\
+        &\\text{fi}
+      \\end{aligned}
+
+      \\\\[12pt]
+
+      \\textbf{Precondition: } P = x \\leq 2
+      \\\\[8pt]
+
+      \\textbf{Postcondition: } Q = x \\leq 1
+      \\\\[12pt]
+
+      \\textbf{Check each branch}
+      \\\\[10pt]
+
+      \\begin{aligned}
+        &\\{(x \\leq 2) \\land x > 0\\} \\ x := x - 1 \\ \\{x \\leq 1\\} \\\\
+        &\\{(x \\leq 2) \\land x \\leq 0\\} \\ x := x + 1 \\ \\{x \\leq 1\\}
+      \\end{aligned}
+
+      \\\\[14pt]
+
+      \\textbf{Reasoning}
+      \\\\[8pt]
+      \\begin{aligned}
+      &\\ \\text{Branch 1: } x \\leq 2 \\land x > 0 \\Rightarrow x \\leq 2 \\Rightarrow x - 1 \\leq 1
+      \\\\
+      &\\ \\text{Branch 2: } x \\leq 0 \\Rightarrow x + 1 \\leq 1
+      \\end{aligned}
+
+      \\\\[12pt]
+
+      \\textbf{Apply conditional rule and write annotations}
+      \\\\[10pt]
+
+      \\begin{aligned}
+        &\\{x \\leq 2\\} \\\\
+        &\\text{if } (x > 0) \\rightarrow \\\\ 
+        &\\quad \\{x \\leq 2 \\land x > 0\\} \\\\
+        &\\quad x := x - 1 \\\\
+        &\\quad \\{x \\leq 1\\} \\\\
+        &[] \\ (x \\leq 0) \\rightarrow \\\\
+        &\\quad \\{x \\leq 2 \\land x \\leq 0\\} \\\\
+        &\\quad x := x + 1 \\\\
+        &\\quad \\{x \\leq 1\\} \\\\
+        &\\text{fi} \\\\
+        &\\{x \\leq 1\\}
+      \\end{aligned}
       `,
     },
     {
@@ -132,6 +282,15 @@ export const pages = [
       \\begin{gather*}
         ${loop}
       \\end{gather*}
+      \\\\[12pt]
+      \\text{A loop is correct if we can find an invariant I:}\\\\
+      \\begin{aligned}
+        &\\text{1. I holds before the loop starts} \\\\
+        &\\text{2. I is preserved by each iteration of the loop} \\\\
+        &\\text{3. When the loop terminates, I and the negation of the loop condition holds}
+      \\end{aligned}
+      \\\\[12pt]
+      \\textbf{Finding the invariant:}\\\\
       `,
     },    
   ];
