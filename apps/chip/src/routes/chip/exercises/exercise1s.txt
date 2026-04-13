@@ -1,0 +1,11 @@
+// Solution: Repeated addition
+{i != n & r = a * i}
+do [r = a * i]
+  i != n ->
+    {r = a * (i + 1) - a}
+    r := r + a;
+    {r = a * (i + 1)}
+    i := i + 1
+    {r = a * i}
+od
+{i = n & r = a * n}

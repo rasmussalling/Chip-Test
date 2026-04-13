@@ -93,7 +93,6 @@ export const pages = [
         &\\{x > 10 \\ \\& \\ k \\geq 3\\}
       \\end{aligned}
       `,
-
     },
     {
       title: 'Sequence Rule',

@@ -52,7 +52,8 @@ fi
   let loopOptions = $state(exerciseFiles.map((content, index) => {
     const lines = content.split('\n');
     const algorithmLine = lines.find(line => line.startsWith('// Algorithm:'));
-    const label = algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : `Exercise ${index + 1}`;
+    const solutionLine = lines.find(line => line.startsWith('// Solution:'));
+    const label = algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : solutionLine ? solutionLine.replace('// Solution:', 'S:').trim() : `Exercise ${index + 1}`;
     return { label, content };
   }));
 
@@ -255,7 +256,6 @@ fi
         <option value={option.label}>{option.label}</option>
       {/each}
     </select>
-    
   </div>
   <!-- <div>
     {#each result.assertions as triple}
