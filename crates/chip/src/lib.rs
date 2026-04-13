@@ -90,7 +90,9 @@ pub fn generate_challenge() -> String {
 
     let post_cond = post_condition(pg.clone(), &mut rng);
 
-    let challenge_text: String = "//TODO: Fully annotate the following program".to_string();
+    let challenge_text: String = 
+        "// TODO: Fully annotate the following program. \n// Try to make your annotations such that the precondition is as weak as possible."
+        .to_string();
 
     
     format!("{}\n{}\n\n{{{}}}", challenge_text, string_program, post_cond)
