@@ -17,6 +17,10 @@
   let model: Monaco.editor.ITextModel;
   let editorContainer: HTMLElement;
 
+  let showOverlay = true;
+  // We test for "{...} //GENERATED PRECONDITION"
+  const PRECONDITION_REGEX = /^\{.*\}\s*\/\/GENERATED PRECONDITION$/i;
+
   onMount(() => {
     let observer: ResizeObserver | void;
     const run = async () => {
@@ -42,6 +46,10 @@
       editor.setModel(model);
       model.onDidChangeContent(() => {
         value = model.getValue();
+        const lines = value.split('\n');
+        const isMatch = PRECONDITION_REGEX.test(lines[0]?.trim());
+
+        showOverlay = isMatch;
       });
 
       observer = new ResizeObserver(() => editor.layout());
@@ -57,8 +65,13 @@
   });
 
   $: if (model && typeof value == 'string' && model.getValue() != value) {
+    const lines = value.split('\n');
+    const isMatch = PRECONDITION_REGEX.test(lines[0]?.trim());
+
+    showOverlay = isMatch;
     model.setValue(value);
   }
+
   let decorations: monacoT.editor.IEditorDecorationsCollection | null = null;
   $: if (model) {
     decorations = editor.createDecorationsCollection();
@@ -144,6 +157,21 @@
 
 <div class="relative h-full w-full">
   <div class="absolute inset-0 overflow-hidden" bind:this={editorContainer}></div>
+
+  {#if showOverlay}
+    <div class="absolute top-0 left-23 w-full h-8 z-10 border-b border-blue-500/30 bg-blue-900 flex items-center gap-6 px-2">
+      <button
+        class="text-[20px] font-bold text-white transition hover:text-blue-200 leading-none"
+        on:click={() => (showOverlay = false)}
+      >
+        Close
+      </button>
+
+      <span class="text-[14px] font-medium text-blue-300/90 leading-none mt-0.5">
+        Below this overlay, is a precondition...
+      </span>
+    </div>
+  {/if}
 </div>
 
 <style>
