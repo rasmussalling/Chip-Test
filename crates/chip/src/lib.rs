@@ -89,11 +89,25 @@ pub fn generate_challenge() -> String {
             );
 
     let post_cond = post_condition(pg.clone(), &mut rng);
-
-    let challenge_text: String = 
-        "// TODO: Fully annotate the following program. \n// Try to make your annotations such that the precondition is as weak as possible."
-        .to_string();
-
     
-    format!("{}\n{}\n\n{{{}}}", challenge_text, string_program, post_cond)
+    let annotated = annotate(pg, post_cond.clone(), string_program.clone());
+
+    let pre_cond = annotated
+        .lines()
+        .next()
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| String::from("true"));
+
+    let pre_cond_with_comment = format!("{} //GENERATED PRECONDITION", pre_cond);
+
+    let challenge_text = "// TODO: Fully annotate the following program.\n\
+                          // Try to make your annotations such that the precondition is as weak as possible.";
+
+    format!(
+        "{}\n{}\n{}\n\n{{{}}}",
+        pre_cond_with_comment,
+        challenge_text,
+        string_program,
+        post_cond
+    )
 }
