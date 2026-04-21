@@ -10,8 +10,22 @@
 
   let { onProgramChange, onClose }: Props = $props();
 
-  let page = $state(0);
+  function getInitialPage() {
+    if (typeof window === 'undefined') return 0;
+    const saved = localStorage.getItem('guide-current-page');
+    if (saved) {
+      const parsed = parseInt(saved, 10);
+      return !isNaN(parsed) && parsed < pages.length ? parsed : 0;
+    }
+    return 0;
+  }
+
+  let page = $state(getInitialPage());
   let container: HTMLElement;
+
+  $effect(() => {
+    localStorage.setItem('guide-current-page', page.toString());
+  });
 
   const prevPage = () => {
     page = (page - 1 + pages.length) % pages.length;
@@ -23,70 +37,83 @@
 
   const getQuizByPage = (page: number) => {
     switch (page) {
-      case 1:
-        return quizzes.assignQuiz;
-      case 2:
-        return quizzes.seqQuiz;
-      case 3:
-        return quizzes.skipQuiz;
-      case 5:
-        return quizzes.condQuiz;
-      case 6:
-        return `Check the loop examples in the dropdown in the right corner!`;
-      default:
-        return `No Quiz for this page`;
+      case 1: return quizzes.assignQuiz;
+      case 2: return quizzes.seqQuiz;
+      case 3: return quizzes.skipQuiz;
+      case 5: return quizzes.condQuiz;
+      case 6: return `Check the loop examples in the dropdown in the right corner!`;
+      default: return `No Quiz for this page`;
     }
   };
-  
+
   onMount(() => {
     container?.focus();
   });
 </script>
 
-<article class="prose prose-invert mx-auto" tabindex="-1" bind:this={container}>
-  <div class="flex flex-col gap-4">
-    <div class="flex items-start justify-between gap-4">
+<article 
+  class="prose prose-invert max-w-none outline-none" 
+  tabindex="-1" 
+  bind:this={container}
+>
+  <div class="flex flex-col min-h-full">
+    
+    <div class="mb-6 flex items-start justify-between gap-4">
       <div>
-        <h1>{pages[page].title}</h1>
+        <h1 class="m-0 text-2xl font-bold leading-tight sm:text-3xl">
+          {pages[page].title}
+        </h1>
       </div>
-      <div class="flex items-center gap-2 text-slate-300">
-        <span>Page {page + 1} / {pages.length}</span>
+      <div class="flex-shrink-0 font-mono text-sm text-slate-400">
+        Page {page + 1} / {pages.length}
       </div>
     </div>
 
-    <Katex math={pages[page].math} displayMode={true} />
+    <div class="flex-1">
+      <Katex math={pages[page].math} displayMode={true} />
+    </div>
 
-    {#if page > 0 && page !== 4 && onProgramChange}
-      <div class="pt-4">
+    <div class="mt-auto flex flex-col gap-6 pt-8">
+      {#if page > 0 && page !== 4 && onProgramChange}
         <button
-          class="rounded bg-blue-600 px-3 py-2 text-sm text-white transition hover:bg-blue-500"
+          class="w-fit rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 active:scale-95"
           type="button"
           onclick={() => {
             onProgramChange(getQuizByPage(page));
             onClose?.();
           }}
         >
-          Try
+          Try this example
         </button>
-      </div>
-    {/if}
+      {/if}
 
-    <div class="flex flex-wrap items-center justify-between gap-2 pt-4">
-      <div class="flex gap-2">
-        <button
-          class="rounded bg-slate-700 px-3 py-2 text-sm text-white transition hover:bg-slate-600"
-          type="button"
-          onclick={prevPage}
+      <div class="flex items-center justify-between border-t border-slate-700/50 pt-6">
+        <div class="flex gap-3">
+          <button
+            class="rounded-md bg-slate-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-30"
+            type="button"
+            disabled={page === 0}
+            onclick={prevPage}
+          >
+            Previous
+          </button>
+          <button
+            class="rounded-md bg-slate-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-30"
+            type="button"
+            disabled={page === pages.length - 1}
+            onclick={nextPage}
+          >
+            Next
+          </button>
+        </div>
+        
+        <button 
+          class="text-sm font-medium text-slate-400 transition hover:text-white"
+          onclick={onClose}
         >
-          Previous
-        </button>
-        <button
-          class="rounded bg-slate-700 px-3 py-2 text-sm text-white transition hover:bg-slate-600"
-          type="button"
-          onclick={nextPage}
-        >
-          Next
+          Close Guide
         </button>
       </div>
+    </div>
   </div>
 </article>
