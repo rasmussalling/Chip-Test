@@ -57,15 +57,6 @@ fi
     return { label, content };
   }));
 
-  const fetchRandomLoop = () => {
-    if (exerciseFiles.length === 0) {
-      fetchError = 'No loop exercises available';
-      return;
-    }
-    program = exerciseFiles[Math.floor(Math.random() * exerciseFiles.length)];
-    fetchError = null;
-  };
-
   const handleProgramChange = (newProgram: string) => {
     program = newProgram;
   };
@@ -90,6 +81,11 @@ fi
     }
   };
 
+  const isEditorEmpty = (src: string) => {
+      const stripped = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*/g, '');
+      return stripped.trim().length === 0;
+  };
+
   $effect.pre(() => {
     const run = async () => {
       const wasm = (await import('chip-wasm')) as unknown as {
@@ -106,9 +102,20 @@ fi
     run().catch(console.error);
   });
 
-  $effect(() => {
-    if (!parse) return;
-    parseError = false;
+$effect(() => {
+  if (!parse) return;
+  parseError = false;
+  
+  if (isEditorEmpty(program)) {
+    result = {
+      parse_error: false,
+      prelude: '',
+      assertions: [],
+      markers: [],
+      is_fully_annotated: false,
+    };
+    return;
+  }
     const res = parse(program);
     if (res.parse_error) parseError = true;
     result = res;
@@ -117,6 +124,13 @@ fi
   $effect(() => {
     const thisResult: ParseResult = $state.snapshot(result) as ParseResult;
     let cancel = () => {};
+
+    if (isEditorEmpty(program)) {
+      ++runId;
+      status = 'idle';
+      verifications = [];
+      return;
+    }
 
     const run = async () => {
       const thisRun = ++runId;

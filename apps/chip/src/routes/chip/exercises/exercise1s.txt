@@ -1,11 +1,16 @@
+{r = a * i}//GENERATED PRECONDITION
 // Solution: Repeated addition
-{i != n & r = a * i}
+{a * 0 = 0}
+i := 0;
+{a * i = 0}
+r := 0;
+{r = a * i}
 do [r = a * i]
   i != n ->
-    {r = a * (i + 1) - a}
+    {r + a = a * (i + 1)}
     r := r + a;
     {r = a * (i + 1)}
     i := i + 1
     {r = a * i}
 od
-{i = n & r = a * n}
+{r = a * n}

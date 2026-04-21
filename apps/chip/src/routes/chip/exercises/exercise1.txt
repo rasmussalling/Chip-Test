@@ -1,13 +1,14 @@
-{x > 4} //GENERATED PRECONDITION
+{r = a * i}//GENERATED PRECONDITION
 // Algorithm: Repeated addition
 /*
   In this program we compute a * n using repeated addition
   TODO: Make the program fully annotated and verified
 */
-
+i := 0;
+r := 0;
 do [I]
   i != n ->
     r := r + a;
     i := i + 1
 od
-{i = n & r = a * n}
+{r = a * n}

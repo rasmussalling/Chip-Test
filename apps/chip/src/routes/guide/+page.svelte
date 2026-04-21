@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-  <title>Chip – Guide</title>
+  <title>Chip - Guide</title>
   <meta name="description" content="Guide" />
 </svelte:head>
 
