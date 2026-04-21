@@ -10,45 +10,35 @@
 
   let { onProgramChange, onClose }: Props = $props();
 
-  function getInitialPage() {
+  let page = $state(initPage());
+
+  function initPage() {
     if (typeof window === 'undefined') return 0;
     const saved = localStorage.getItem('guide-current-page');
-    if (saved) {
-      const parsed = parseInt(saved, 10);
-      return !isNaN(parsed) && parsed < pages.length ? parsed : 0;
-    }
-    return 0;
+    const p = Number(saved);
+    return (saved !== null && Number.isInteger(p) && p >= 0 && p < pages.length) ? p : 0;
   }
 
-  let page = $state(getInitialPage());
-  let container: HTMLElement;
-
   $effect(() => {
-    localStorage.setItem('guide-current-page', page.toString());
+    localStorage.setItem('guide-current-page', String(page));
   });
 
-  const prevPage = () => {
-    page = (page - 1 + pages.length) % pages.length;
-  };
-
-  const nextPage = () => {
-    page = (page + 1) % pages.length;
-  };
+  const prevPage = () => { page = (page - 1 + pages.length) % pages.length; };
+  const nextPage = () => { page = (page + 1) % pages.length; };
 
   const getQuizByPage = (page: number) => {
-    switch (page) {
-      case 1: return quizzes.assignQuiz;
-      case 2: return quizzes.seqQuiz;
-      case 3: return quizzes.skipQuiz;
-      case 5: return quizzes.condQuiz;
-      case 6: return `Check the loop examples in the dropdown in the right corner!`;
-      default: return `No Quiz for this page`;
-    }
+    const quizMap: Record<number, string> = {
+      1: quizzes.assignQuiz,
+      2: quizzes.seqQuiz,
+      3: quizzes.skipQuiz,
+      5: quizzes.condQuiz,
+      6: `Check the loop examples in the dropdown in the right corner!`
+    };
+    return quizMap[page] ?? `No Quiz for this page`;
   };
 
-  onMount(() => {
-    container?.focus();
-  });
+  let container: HTMLElement;
+  onMount(() => { container?.focus(); });
 </script>
 
 <article 
@@ -83,7 +73,7 @@
             onClose?.();
           }}
         >
-          Try this example
+          Try
         </button>
       {/if}
 
@@ -92,7 +82,6 @@
           <button
             class="rounded-md bg-slate-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-30"
             type="button"
-            disabled={page === 0}
             onclick={prevPage}
           >
             Previous
@@ -100,7 +89,6 @@
           <button
             class="rounded-md bg-slate-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-30"
             type="button"
-            disabled={page === pages.length - 1}
             onclick={nextPage}
           >
             Next
