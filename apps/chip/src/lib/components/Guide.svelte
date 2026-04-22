@@ -95,6 +95,17 @@
           </button>
         </div>
         
+        <select
+          class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
+          bind:value={page}
+        >
+          {#each pages as p, i}
+            <option value={i}>
+              {i + 1}. {p.title}
+            </option>
+          {/each}
+        </select>
+
         <button 
           class="text-sm font-medium text-slate-400 transition hover:text-white"
           onclick={onClose}
