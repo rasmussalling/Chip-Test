@@ -77,14 +77,16 @@ pub fn annotate(pg: ProgramGraph, post_cond: String, program: String) -> String 
 
     let mut _end_cond: String = String::new();
     let mut _end_node: Node = final_node.clone();
-    (total_cond, _end_cond, _end_node) = make_pre_condition(pg.clone(), current_cond.clone(), total_cond.clone(), final_node, &Skip, false, true);
+    (total_cond, _end_cond, _end_node) = make_pre_condition(pg.clone(), current_cond.clone(), total_cond.clone(), final_node, &Skip, false);
 
     let annotated_program = place_annotations(total_cond.clone(), program.clone());
 
     format!("{}", annotated_program)
 }
 
-fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond: Vec<String>, cur_node: Node, action: &Action, g: bool, og: bool) -> (Vec<String>, String, Node) {
+fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond: Vec<String>, cur_node: Node, action: &Action, g: bool) -> (Vec<String>, String, Node) {
+    let mut og: bool = false;
+
     let mut guard_stack = vec![];
     let mut end_cond: String = String::new();
     
@@ -142,8 +144,9 @@ fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond
         } else if incoming_edges.len() > 1 {
             for edge in incoming_edges.iter().rev() {
                 let mut guard_cond: String = String::new();
-                (total_cond, guard_cond, next_node) = make_pre_condition(pg.clone(), current_cond.clone(), total_cond.clone(), edge.from(), edge.action(), true, false);
+                (total_cond, guard_cond, next_node) = make_pre_condition(pg.clone(), current_cond.clone(), total_cond.clone(), edge.from(), edge.action(), true);
                 guard_stack.push(format!("({})", guard_cond.clone()));
+                og = true;
             }
             let total_guard_cond: String = guard_stack.iter().join(" & ");
             guard_stack.clear();
@@ -155,9 +158,11 @@ fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond
         let next_edges = pg.incoming(next_node);
         incoming_edges = next_edges;
 
-        if (pg.outgoing_edges(next_node).len() > 1 && !og) {
+        if pg.outgoing_edges(next_node).len() > 1 && !og {
             end_cond = format!("{}", current_cond.clone());
             break
+        } else {
+            og = false
         }
     };
 
