@@ -43,360 +43,320 @@ const loop = `
     \\quad \\text{[loop]}
   `;
 
-
 export const pages = [
-    {
-      title: 'Floyd-Hoare Triples',
-      math: String.raw `
-      \text{A Floyd-Hoare triple has the form: } \{P\} \ C \ \{Q\}, \text{consisting of:}
+  {
+    title: 'Two Paths to Proof',
+    math: String.raw`
+      \textbf{1. Hoare Logic (Theory)}
+      \\[4pt]
+      \text{Used for building \textbf{Proof Trees}. This is the logical foundation shown in lecture.}
+      \\[12pt]
+      \textbf{2. WP Calculus (Practice)}
+      \\[4pt]
+      \text{This is the mechanical algorithm for finding preconditions.}
+      \\[16pt]
+      \textit{In Chip, you will primarily use \textbf{WP Calculus} to work backwards through your code.}
+    `,
+  },
+  {
+    title: 'Hoare Rules (Proof Trees)',
+    math: String.raw`
+      \text{These inference rules are used to decompose a program from the bottom up.}
+      \\[12pt]
+      \begin{gather*}
+        ${skip} \\[8pt]
+        ${assign} \\[12pt]
+        ${seq} \\[12pt]
+        ${cons} \\[12pt]
+        ${cond} \\[14pt]
+        ${loop}
+      \end{gather*}
+    `,
+  },
+  {
+    title: 'Step-by-Step Proof Tree',
+    math: String.raw`
+      \text{Let us prove the triple: } \{ \text{true} \} \ \text{if } x > 0 \to x := 5 \ \text{fi} \ \{x = 5\}
+      \\[12pt]
+      \text{First, we identify that the command is an \texttt{if}, requiring us to prove the inner branch:}
+      \\[8pt]
+      \frac{\{\text{true} \land x > 0\} \ x := 5 \ \{x = 5\}}{\{\text{true}\} \ \text{if } x > 0 \to x := 5 \ \text{fi} \ \{x = 5\}} \text{[cond]}
+      \\[18pt]
+      \text{To prove the next inner branch we use the assignment and consequence rule}
+      \\[8pt]
+      \frac{ \text{true} \land x > 0 \models 5 = 5 \quad \frac{}{\displaystyle \{5 = 5\} \ x := 5 \ \{x = 5\}} \text{[assign]} }{ \{\text{true} \land x > 0\} \ x := 5 \ \{x = 5\} } \text{[cons]}
+      \\[18pt]
+      \textbf{The Final Nested Proof Tree} \\[6pt]
+      \begin{equation*}
+        \frac{
+          \displaystyle
+          \text{true} \land x > 0 \models 5 = 5
+          \quad
+          \frac{}{ \displaystyle \{5 = 5\} \ x := 5 \ \{x = 5\} }
+        }{
+          \displaystyle
+          \frac{
+            \displaystyle \{\text{true} \land x > 0\} \ x := 5 \ \{x = 5\}
+          }{
+            \displaystyle \{\text{true}\} \ \text{if } x > 0 \to x := 5 \ \text{fi} \ \{x = 5\}
+          }
+        }
+      \end{equation*}
+    `,
+  },
+  {
+    title: 'Rule: Skip',
+    math: String.raw`
+      \textbf{The Rule:}\\[4pt]
+      \frac{ }{ \{Q\} \ \text{skip} \ \{Q\} } \text{[skip]}
+      \\[14pt]
+      \textbf{Example:}\\[4pt]
+      \frac{ }{ \{x = 5\} \ \text{skip} \ \{x = 5\} }
+    `,
+  },
+  {
+    title: 'Rule: Assignment',
+    math: String.raw`
+      \textbf{The Rule:}\\[4pt]
+      \frac{ }{ \{Q[a/x]\} \ x := a \ \{Q\} } \text{[assign]}
+      \\[14pt]
+      \textbf{Example:}\\[4pt]
+      \frac{ }{ \{10 = 10\} \ x := 10 \ \{x = 10\} }
+    `,
+  },
+  {
+    title: 'Rule: Sequence',
+    math: String.raw`
+      \textbf{The Rule:}\\[4pt]
+      \frac{ \{P\} \ C_1 \ \{R\} \quad \{R\} \ C_2 \ \{Q\} }{ \{P\} \ C_1; C_2 \ \{Q\} } \text{[seq]}
+      \\[14pt]
+      \textbf{Example:}\\[4pt]
+      \frac{ \{1 = 1\} \ x := 1 \ \{x = 1\} \quad \{x = 1\} \ y := x \ \{y = 1\} }{ \{1 = 1\} \ x := 1; y := x \ \{y = 1\} }
+    `,
+  },
+  {
+    title: 'Rule: Consequence',
+    math: String.raw`
+      \textbf{The Rule:}\\[4pt]
+      \frac{ P \models P' \quad \{P'\} \ C \ \{Q'\} \quad Q' \models Q }{ \{P\} \ C \ \{Q\} } \text{[cons]}
+      \\[14pt]
+      \textbf{Example:}\\[4pt]
+      \frac{ x = 10 \models 10 = 10 \quad \frac{}{\displaystyle \{10 = 10\} \ x := 10 \ \{x = 10\}} \quad x = 10 \models x > 0 }{ \{x = 10\} \ x := 10 \ \{x > 0\} }
+    `,
+  },
+  {
+    title: 'Rule: Conditional',
+    math: String.raw`
+      \textbf{The Rule:}\\[4pt]
+      ${cond}
+      \\[14pt]
+      \textbf{Example:}\\[4pt]
+      \frac{ \{x > 0 \land x > 0\} \ \text{skip} \ \{x > 0\} \quad \{x > 0 \land x \le 0\} \ \text{skip} \ \{x > 0\} }{ \{x > 0\} \ \text{if } x > 0 \to \text{skip} \ [] \ x \le 0 \to \text{skip} \ \text{fi} \ \{x > 0\} }
+    `,
+  },
+  {
+    title: 'Rule: Loops',
+    math: String.raw`
+      \textbf{The Rule:}\\[4pt]
+      \frac
+      { \{I \land b\} \ C \ \{I\} } 
+      { \{I\} \ \text{do } b \to C \ \text{od} \ \{I \land \neg b\} } 
+      \quad \text{[loop]}
+      \\[14pt]
+      \textbf{Example: Simple Counter}\\[4pt]
+      \frac{ \{x \le 10 \land x < 10\} \ x := x + 1 \ \{x \le 10\} }{ \{x \le 10\} \ \text{do } x < 10 \to x := x + 1 \ \text{od} \ \{x \le 10 \land \neg(x < 10)\} }
+      \\[14pt]
+      \textbf{The Invariant:}\\[4pt]
+      \text{The invariant } I \text{ is a property that holds before and after every iteration of the loop.}\\
+      \text{Please understand that the invariant is something that you must come up with yourself!}\\
+    `,
+  },
+  {
+    title: 'Finding the Invariant',
+    math: String.raw`
+      \text{A loop is correct if we can find an invariant } I \text{ such that:}\\
+      \begin{aligned}
+        &\text{1. } I \text{ holds before the loop starts} \\
+        &\text{2. } I \text{ is preserved by each iteration} \\
+        &\text{3. Upon termination, } I \land \neg b \text{ holds}
+      \end{aligned}
+      \\[12pt]
+      \textbf{Observe the Pattern}\\[4pt]
+      \begin{aligned}
+        &\text{Initially: } &&i = 0, r = 1 = e^0 \\
+        &\text{1st iteration: } &&i = 1, r = e = e^1 \\
+        &\text{2nd iteration: } &&i = 2, r = e \cdot e = e^2 \\
+      \end{aligned}
+      \implies \text{Hypothesis: } r = e^i
+      \\[12pt]
+      \textbf{Define the Full Invariant}\\[4pt]
+      \text{We must also bound } i \text{ using the loop guard } (i < n):\\
+      \boxed{I: (r = e^i) \land (0 \le i \le n)}
+      \\[12pt]
+      \textbf{Proof by mathematical induction:}\\
+      \text{Base case: } \\
+      \begin{aligned}
+        &i = 0 \\
+        &r = 1 = e^i = e^0 = 1 \quad 
+      \end{aligned} 
+      \\ \checkmark
+      \\[8pt]
+      \text{Inductive step: }\\
+      \begin{aligned}
+        &r = e^k \\
+        &r' = e \cdot r = e \cdot e^k = e^{k + 1} \\
+        &i' = k + 1 \\
+        &r' = e^{i'} \quad 
+      \end{aligned}
+      \\ \checkmark
+      \\[12pt]
+    `,
+  },
+  {
+    title: 'WP Rules',
+    math: String.raw`
+      \text{The WP rules are the algorithmic counterpart to the Hoare rules.}\\
+      \text{They are used to compute the weakest precondition for a given command and postcondition.}\\
+      \text{For loop-free programs, } \mathrm{wp}(C, Q) \text{ is defined inductively:}\\
+      \\[4pt]
+      \mathrm{wp}(C, Q) = 
+      \begin{cases} 
+        Q, & \text{if } C = \text{skip} \\
+        Q[a/x], & \text{if } C = x := a \\
+        \mathrm{wp}(C_1, \mathrm{wp}(C_2, Q)), & \text{if } C = C_1 ; C_2 \\
+        \displaystyle \bigwedge_{i=1}^n (b_i \Rightarrow \mathrm{wp}(C_i, Q)), & \text{if } C = \text{if } \dots \text{fi}
+      \end{cases}
+      \\[12pt]
+
+    `,
+  },
+  {
+    title: 'WP Rules - Skip',
+    math: String.raw`
+      \boxed{\mathrm{wp}(\text{skip}, Q) = Q}
+      \\[14pt]
+      \textbf{Goal: Derive the precondition}
       \\[8pt]
       \begin{aligned}
-        &\text{A predicate } P \text{ called the precondition, }\\
-        &\text{A GCL command } C \text{, and}\\
-        &\text{A predicate } Q \text{ called the postcondition.}\\
-      \end{aligned}
-
-      \\[12pt]
-      \text{The triple is valid if and only if for every complete execution:}
-      \\[6pt] 
-      \text{Initial memory satisfies } P \text{ and the final memory satisfies } Q.
-      \\[12pt]
-      \textbf{Examples:}\\[6pt]
-      \begin{aligned}
-       &\models\{ \text{ true } \} \ x := 17 \ \{x \geq 0\} \\
-       &\not\models\{ \text{ true } \} \ x := x+y \ \{x > 0\}
+        &\{?\} \\ 
+        &\text{skip} \\ 
+        &\{x = 5\}
       \end{aligned}
       \\[6pt]
-      \text{The first triple is valid because the postcondition is satisfied in every execution.}\\ 
-      \text{The second triple is not valid because there is a counter example: } \sigma(x) = 0 \text{ and } \sigma(y) = -5.
-      `,
-    },
-    {
-      title: 'Welcome to Chip',
-      math: String.raw `
-      \begin{aligned}
-        &\text{Chip is a tool for learning and practicing formal verification of programs.}
+      \text{Since skip does not change the state, the precondition is the same as the postcondition.}
       \\[8pt]
-        &\text{It provides an interactive playground for writing and verifying GCL programs using Floyd-Hoare logic.}
+      \mathrm{wp}(\text{skip}, (x = 5)) = (x = 5)
       \\[12pt]
-        &\text{In this guide, we will cover the basics of Floyd-Hoare logic and how to use Chip to verify your programs.}\\
-        &\text{In the bottom of the page you will find a status bar that shows the current state of the verification process.}\\
-        &\text{The verification process starts when you write code in the editor. If your program successfully parses,}\\
-        &\text{an AST has been generated and the annotations in the code is translated into a language that the solver in}\\
-        &\text{the backend can understand. The status bar will then show you the result of the verification process.}\\[8pt]
-        \end{aligned}
-        \\[6pt]
-        \text{Try to make your programs verified and fully annotated!}
-      `,
-    },
-    {
-      title: 'Hoare Rules',
-      
-      math: `
-      \\begin{gather*}
-        ${assign} \\\\[12pt]
-        ${seq} \\\\[12pt]
-        ${skip} \\\\[12pt]
-        ${cons} \\\\[12pt]
-        ${cond} \\\\[12pt]
-        ${loop}
-      \\end{gather*}
-      `,
-    },
-    {
-      title: 'Assignment Rule',
-      math: `
-      \\boxed{${assign}}
-      \\\\[8pt]
-      \\textbf{Goal: Derive the precondition}
-      \\\\[8pt]
+      \textbf{Final result:}\\[8pt]
+      \begin{aligned}
+        &\{x = 5\} \\ 
+        &\text{skip} \\ 
+        &\{x = 5\}
+      \end{aligned}
+    `,
+  },
+  {
+    title: 'WP Rules - Assignment',
+    math: String.raw`
+      \boxed{\mathrm{wp}(x := a, Q) = Q[a/x]}
+      \\[14pt]
+      \textbf{Goal: Derive the precondition}\\
+      \begin{aligned}
+        &\{?\} \\
+        &x := z + y \\
+        &\{x > 10 \ \& \ k \geq 3 \}
+      \end{aligned}
 
-      \\begin{aligned}
-        &\\{\\ ?\\ \\} \\\\
-        &x := z + y \\\\
-        &\\{x > 10 \\ \\& \\ k \\geq 3 \\}
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{Apply assignment rule}
-      \\\\[6pt]
-      \\text{Substitute } x \\text{ with } (z + y) \\text{ in the postcondition}
-      \\\\[8pt]
-
-      \\{x > 10 \\ \\& \\ k \\geq 3\\} \\Rightarrow \\{z + y > 10 \\ \\& \\ k \\geq 3\\}
-
-      \\\\[12pt]
-
-      \\textbf{Final result:}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &\\{z + y > 10 \\ \\& \\ k \\geq 3\\} \\\\
-        &x := z + y \\\\
-        &\\{x > 10 \\ \\& \\ k \\geq 3\\}
-      \\end{aligned}
-      `,
-    },
-    {
-      title: 'Sequence Rule',
-      math: `
-      \\boxed{${seq}}
-      \\\\[8pt]
-
-      \\textbf{Goal: Find the intermediate assertion}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &\\{\\ x > 5\\ \\} \\\\
-        &x := x + 1; \\\\
-        &y := x * 2 \\\\
-        &\\{y > 12\\}
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{Use assignment rule to find the intermediate assertion}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &\\{x > 5\\} \\\\
-        &x := x + 1 \\\\
-        &\\{x * 2 > 12\\} \\\\
-        &y := x * 2 \\\\
-        &\\{y > 12\\}
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{Get final result by reducing the assertion}
-      \\\\[8pt]
-      \\begin{aligned}
-        &\\{x > 5\\} \\\\
-        &x := x + 1 \\\\
-        &\\{x > 6\\} \\\\
-        &\\{x * 2 > 12\\} \\\\
-        &y := x * 2 \\\\
-        &\\{y > 12\\}
-      \\end{aligned}
-      `,
-    },
-    {
-      title: 'Skip Rule',
-      math: `
-      \\boxed{${skip}}
-      \\\\[8pt]
-
-      \\textbf{Skip does not change the state, so the precondition and postcondition are the same}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &\\{\\ z > \\text{exp}(3, i)\\ \\} \\\\
-        &\\text{skip}; \\\\
-        &\\{\\ z > \\text{exp}(3, i)\\ \\}
-      \\end{aligned}
-      `,
-    },
-    {
-      title: 'Consequence Rule',
-      math: `
-      \\boxed{${cons}}
-      \\\\[8pt]
-      \\textbf{Goal: Strengthen the precondition and weaken the postcondition}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &\\{x > 5\\} \\\\
-        &x := x + 1 \\\\
-        &\\{x > 6\\}
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{We want:}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &\\{x > 10\\} \\\\
-        &x := x + 1 \\\\
-        &\\{x > 0\\}
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{Check implications}
-      \\\\[6pt]
-
-      \\text{P: } x > 10 \\Rightarrow x > 5
-      \\\\[4pt]
-      \\text{Q: } x > 6 \\Rightarrow x > 0
-
-      \\\\[12pt]
-
-      \\textbf{Apply consequence rule}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &x > 10 \\ \\models \\ x > 5 \\\\
-        &\\{x > 5\\} \\ x := x + 1 \\ \\{x > 6\\} \\\\
-        &x > 6 \\ \\models \\ x > 0
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{Final result:}
-      \\\\[8pt]
-
-      \\begin{aligned}
-        &\\{x > 10\\} \\\\
-        &x := x + 1 \\\\
-        &\\{x > 0\\}
-      \\end{aligned}
-      `,
-    },
-    {
-      title: 'Conditional Rule',
-      math: `
-      \\boxed{${cond}}
-      \\\\[8pt]
-
-      \\textbf{Goal: Verify each branch preserves Q}
-      \\\\[8pt]
-
-      \\textbf{Given program:}
-      \\\\[6pt]
-
-      \\begin{aligned}
-        &\\text{if } (x > 0) \\rightarrow \\\\
-        &\\quad x := x - 1 \\\\
-        &[] \\ (x \\leq 0) \\rightarrow \\\\
-        &\\quad x := x + 1 \\\\
-        &\\text{fi}
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{Precondition: } P = x \\leq 2
-      \\\\[8pt]
-
-      \\textbf{Postcondition: } Q = x \\leq 1
-      \\\\[12pt]
-
-      \\textbf{Check each branch}
-      \\\\[10pt]
-
-      \\begin{aligned}
-        &\\{(x \\leq 2) \\land x > 0\\} \\ x := x - 1 \\ \\{x \\leq 1\\} \\\\
-        &\\{(x \\leq 2) \\land x \\leq 0\\} \\ x := x + 1 \\ \\{x \\leq 1\\}
-      \\end{aligned}
-
-      \\\\[14pt]
-
-      \\textbf{Reasoning}
-      \\\\[8pt]
-      \\begin{aligned}
-      &\\ \\text{Branch 1: } x \\leq 2 \\land x > 0 \\Rightarrow x \\leq 2 \\Rightarrow x - 1 \\leq 1
-      \\\\
-      &\\ \\text{Branch 2: } x \\leq 0 \\Rightarrow x + 1 \\leq 1
-      \\end{aligned}
-
-      \\\\[12pt]
-
-      \\textbf{Apply conditional rule and write annotations}
-      \\\\[10pt]
-
-      \\begin{aligned}
-        &\\{x \\leq 2\\} \\\\
-        &\\text{if } (x > 0) \\rightarrow \\\\ 
-        &\\quad \\{x \\leq 2 \\land x > 0\\} \\\\
-        &\\quad x := x - 1 \\\\
-        &\\quad \\{x \\leq 1\\} \\\\
-        &[] \\ (x \\leq 0) \\rightarrow \\\\
-        &\\quad \\{x \\leq 2 \\land x \\leq 0\\} \\\\
-        &\\quad x := x + 1 \\\\
-        &\\quad \\{x \\leq 1\\} \\\\
-        &\\text{fi} \\\\
-        &\\{x \\leq 1\\}
-      \\end{aligned}
-      `,
-    },
-    {
-      title: 'Loop Rule',
-      math: `
-      \\begin{gather*}
-        ${loop}
-      \\end{gather*}
-      \\\\[12pt]
-      \\text{A loop is correct if we can find an invariant I:}\\\\
-      \\begin{aligned}
-        &\\text{1. I holds before the loop starts} \\\\
-        &\\text{2. I is preserved by each iteration of the loop} \\\\
-        &\\text{3. When the loop terminates, I and the negation of the loop condition holds}
-      \\end{aligned}
-      \\\\[12pt]
-      \\textbf{Given the program:}\\\\
-      \\begin{aligned}
-        &r := 1; \\\\
-        &i := 0; \\\\
-        &\\text{do }[false] \\\\
-        &\\quad i \\neq n \\rightarrow \\\\
-        &\\quad \\quad r := e \\cdot r; \\\\
-        &\\quad \\quad i := i + 1 \\\\
-        &\\text{od}\\\\
-        &\\{i = n \\land r = \\text{exp}(e, n)\\}
-      \\end{aligned}
-      \\\\[12pt]
-      \\textbf{Find an invariant I}
-      \\\\[8pt]
-      \\text{Initially:}\\\\
-      i = 0 \\text{ and } r = 1 = e^0 \\\\[8pt]
-      \\text{Each loop iteration } r \\text{ is multiplied by } e \\text{ and } i \\text{ increases by 1} \\\\[8pt]
-
-      \\begin{aligned}
-        &1 \\text{ iteration: } &&r = e^1 \\\\
-        &2 \\text{ iterations: } &&r = e \\cdot e = e^2 \\\\
-        &3 \\text{ iterations: } &&r = e^2 \\cdot e = e^3 \\\\
-      \\end{aligned}
-      \\\\[8pt]
-      \\begin{aligned}
-        \\boxed{r = \\text{exp}(e, i)}
-      \\end{aligned}
-      \\\\[16pt]
-      \\textbf{Proof by mathematical induction:}\\\\
-      \\text{Base case: } \\\\
-      \\begin{aligned}
-        &i = 0 \\\\
-        &r = 1 = e^i = e^0 = 1
-      \\end{aligned} 
-      \\\\
-      \\checkmark \\\\[8pt]
-      \\text{Inductive step: }\\\\
-      \\begin{aligned}
-        &r = e^k\\\\
-        &r' = e \\cdot r = e \\cdot e^k = e^{k + 1} \\\\
-        &i' = k + 1\\\\
-        &r' = e^{i'}
-      \\end{aligned}
-      \\\\
-      \\checkmark\\\\ 
-      \\textbf{Lastly we reason that } i \\text{ stays in a known domain}\\\\
-      0 \\leq i \\leq n \\\\[12pt]
-      \\textbf{Final program:}\\\\
-      \\begin{aligned}
-        &r := 1; \\\\
-        &i := 0; \\\\
-        &\\text{do }[0 \\leq i \\ \\land i \\leq n \\ \\land r = \\text{exp}(e, i)] \\\\
-        &\\quad i \\neq n \\rightarrow \\\\
-        &\\quad \\quad r := e \\cdot r; \\\\
-        &\\quad \\quad i := i + 1 \\\\
-        &\\text{od}\\\\
-        &\\{i = n \\land r = \\text{exp}(e, n)\\}
-      \\end{aligned}
-
-      `,
-    },    
-  ];
-
+      \\[12pt]
+      \text{Substitute } x \text{ with } (z + y) \text{ in the postcondition}
+      \\[8pt]
+      \mathrm{wp}(x := z + y, (x > 10 \ \& \ k \geq 3)) = (z + y > 10 \ \& \ k \geq 3)
+      \\[12pt]
+      \textbf{Final result:}\\[8pt]
+      \begin{aligned}
+        &\{z + y > 10 \ \& \ k \geq 3\} \\
+        &x := z + y \\
+        &\{x > 10 \ \& \ k \geq 3\}
+      \end{aligned}
+    `,
+  },
+  {
+    title: 'WP Rules - Sequence',
+    math: String.raw`
+      \boxed{\mathrm{wp}(C_1; C_2, Q) = \mathrm{wp}(C_1, \mathrm{wp}(C_2, Q))}
+      \\[14pt]
+      \textbf{Goal: Derive the precondition}
+      \\[8pt]
+      \begin{aligned}
+        &\{?\} \\ 
+        &x := x + 1; \\ 
+        &y := x + y \\ 
+        &\{y > 10\}
+      \end{aligned}
+      \\[12pt]
+      \textbf{Calculate the inner wp} \\
+      \mathrm{wp}(y := x + y, (y > 10)) = (x + y > 10)
+      \\[12pt]
+      \textbf{Calculate the outer wp using the inner wp} \\
+      \mathrm{wp}(x := x + 1, (x + y > 10)) = ((x + 1) + y > 10) = (x + y > 9)
+      \\[12pt]
+      \textbf{Final result:}\\[8pt]
+      \begin{aligned}
+        &\{x + y > 9\} \\ 
+        &x := x + 1; \\ 
+        &y := x + y \\ 
+        &\{y > 10\}
+      \end{aligned}
+    `,
+  },
+  {
+    title: 'WP Rules - Conditionals',
+    math: String.raw`
+      \boxed{\mathrm{wp}(\text{if } \dots \text{fi}, Q) = \bigwedge_{i=1}^n (b_i \Rightarrow \mathrm{wp}(C_i, Q))}
+      \\[14pt]
+      \textbf{Goal: Derive the precondition}
+      \\[8pt]
+      \begin{aligned}
+        &\{?\} \\
+        &\text{if } x > 0 \rightarrow \\
+        &\quad x := x - 1 \\
+        &[] \ x \leq 0 \rightarrow \\
+        &\quad x := x + 1 \\
+        &\text{fi} \\
+        &\{x = 0\}
+      \end{aligned}
+      \\[12pt]
+      \textbf{Apply to each branch} \\
+      \begin{aligned}
+        &x > 0 \Rightarrow \mathrm{wp}(x := x - 1, (x = 0))\\
+        &= \quad x > 0 \Rightarrow (x = 1) \\
+        &x \leq 0 \Rightarrow \mathrm{wp}(x := x + 1, (x = 0))\\
+        &= \quad x \leq 0 \Rightarrow (x = -1)
+      \end{aligned}
+      \\[12pt]
+      \textbf{Conjugate the implications}\\
+      \mathrm{wp}(\text{if } \dots \text{fi}, (x = 0)) =\\
+      (x \leq 0 \Rightarrow (x = -1)) \land (x > 0 \Rightarrow (x = 1))
+      \\[12pt]
+      \textbf{Final fully annotated program as it would "look" in Chip:}
+      \\[8pt]
+      \begin{aligned}
+        &\{x = 1 \ | \ x = -1 \}\\
+        &\{(x > 0 \Rightarrow x = 1) \land (x \leq 0 \Rightarrow x = -1)\}\\
+        &\text{if } x > 0 \rightarrow \\
+        &\quad \{x=1\}\\
+        &\quad x := x - 1 \\
+        &\quad \{x=0\}\\
+        &[] \ x \leq 0 \rightarrow \\
+        &\quad \{x=-1\}\\
+        &\quad x := x + 1 \\
+        &\quad \{x=0\}\\
+        &\text{fi} \\
+        &\{x = 0\}
+      \end{aligned}
+    `,
+  }
+];
 
 
 
