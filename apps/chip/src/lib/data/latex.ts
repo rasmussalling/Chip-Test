@@ -46,8 +46,52 @@ const loop = `
 
 export const pages = [
     {
+      title: 'Floyd-Hoare Triples',
+      math: String.raw `
+      \text{A Floyd-Hoare triple has the form: } \{P\} \ C \ \{Q\}, \text{consisting of:}
+      \\[8pt]
+      \begin{aligned}
+        &\text{A predicate } P \text{ called the precondition, }\\
+        &\text{A GCL command } C \text{, and}\\
+        &\text{A predicate } Q \text{ called the postcondition.}\\
+      \end{aligned}
+
+      \\[12pt]
+      \text{The triple is valid if and only if for every complete execution:}
+      \\[6pt] 
+      \text{Initial memory satisfies } P \text{ and the final memory satisfies } Q.
+      \\[12pt]
+      \textbf{Examples:}\\[6pt]
+      \begin{aligned}
+       &\models\{ \text{ true } \} \ x := 17 \ \{x \geq 0\} \\
+       &\not\models\{ \text{ true } \} \ x := x+y \ \{x > 0\}
+      \end{aligned}
+      \\[6pt]
+      \text{The first triple is valid because the postcondition is satisfied in every execution.}\\ 
+      \text{The second triple is not valid because there is a counter example: } \sigma(x) = 0 \text{ and } \sigma(y) = -5.
+      `,
+    },
+    {
+      title: 'Welcome to Chip',
+      math: String.raw `
+      \begin{aligned}
+        &\text{Chip is a tool for learning and practicing formal verification of programs.}
+      \\[8pt]
+        &\text{It provides an interactive playground for writing and verifying GCL programs using Floyd-Hoare logic.}
+      \\[12pt]
+        &\text{In this guide, we will cover the basics of Floyd-Hoare logic and how to use Chip to verify your programs.}\\
+        &\text{In the bottom of the page you will find a status bar that shows the current state of the verification process.}\\
+        &\text{The verification process starts when you write code in the editor. If your program successfully parses,}\\
+        &\text{an AST has been generated and the annotations in the code is translated into a language that the solver in}\\
+        &\text{the backend can understand. The status bar will then show you the result of the verification process.}\\[8pt]
+        \end{aligned}
+        \\[6pt]
+        \text{Try to make your programs verified and fully annotated!}
+      `,
+    },
+    {
       title: 'Hoare Rules',
-      description: 'A quick overview of the main Hoare logic proof rules.',
+      
       math: `
       \\begin{gather*}
         ${assign} \\\\[12pt]

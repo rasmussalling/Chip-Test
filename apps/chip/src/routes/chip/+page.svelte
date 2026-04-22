@@ -223,54 +223,54 @@ $effect(() => {
         : {
             idle: 'Idle',
             verifying: 'Verifying...',
-            verified: 'Verified',
+            verified: 'Verified -',
             error: 'Verification error',
             timeout: 'Verification timed out',
           }[status]}
     </span>
-    <div class="flex-1"></div>
-    <span class="text-xl">
+    <span class="text-[0.9em]">
       {#if !parseError && status == 'verified'}
         {#if result.is_fully_annotated}
-          The program is <b>fully annotated</b>
+           &nbsp;The program is <b>fully annotated</b>
         {:else}
-          The program is <b><i>not</i> fully annotated</b>
+           &nbsp;The program is <b><i>not</i> fully annotated</b>
         {/if}
       {/if}
     </span>
-    {#if fetchError}
-      <span class="ml-4 text-base text-white/80">{fetchError}</span>
-    {/if}
-    <button
-      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
-      onclick={fetchExample}
-      disabled={!generateSampleProgram}
-    >
-      Example
-    </button>
-    <button
-      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
-      onclick={fetchChallenge}
-      disabled={!generateChallenge}
-    >
-      Challenge
-    </button>
+      <div class="flex-1"></div>
+      {#if fetchError}
+        <span class="ml-4 text-base text-white/80">{fetchError}</span>
+      {/if}
+      <button
+        class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
+        onclick={fetchExample}
+        disabled={!generateSampleProgram}
+      >
+        Example
+      </button>
+      <button
+        class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900 disabled:opacity-60"
+        onclick={fetchChallenge}
+        disabled={!generateChallenge}
+      >
+        Challenge
+      </button>
 
-    <select
-      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
-      onchange={(e) => {
-        const target = e.target as HTMLSelectElement;
-        const selected = loopOptions.find(opt => opt.label === target.value);
-        if (selected) program = selected.content;
-        target.selectedIndex = 0;
-      }}
-    >
-      <option disabled selected>Loops</option>
-      {#each loopOptions as option}
-        <option value={option.label}>{option.label}</option>
-      {/each}
-    </select>
-  </div>
+      <select
+        class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
+        onchange={(e) => {
+          const target = e.target as HTMLSelectElement;
+          const selected = loopOptions.find(opt => opt.label === target.value);
+          if (selected) program = selected.content;
+          target.selectedIndex = 0;
+        }}
+      >
+        <option disabled selected>Loops</option>
+        {#each loopOptions as option}
+          <option value={option.label}>{option.label}</option>
+        {/each}
+      </select>
+    </div>
   <!-- <div>
     {#each result.assertions as triple}
       <pre class="p-4">{triple.smt}</pre>
