@@ -28,13 +28,13 @@
 
   const getQuizByPage = (page: number) => {
     const quizMap: Record<number, string> = {
-      1: quizzes.assignQuiz,
-      2: quizzes.seqQuiz,
-      3: quizzes.skipQuiz,
-      5: quizzes.condQuiz,
-      6: `Check the loop examples in the dropdown in the right corner!`
+      9: quizzes.loopQuiz,
+      11: quizzes.skipQuiz,
+      12: quizzes.assignQuiz,
+      13: quizzes.seqQuiz,
+      14: quizzes.condQuiz,
     };
-    return quizMap[page] ?? `No Quiz for this page`;
+    return quizMap[page] ?? ``;
   };
 
   let container: HTMLElement;
@@ -64,7 +64,7 @@
     </div>
 
     <div class="mt-auto flex flex-col gap-6 pt-8">
-      {#if page > 0 && page !== 4 && onProgramChange}
+      {#if getQuizByPage(page) != `` && onProgramChange}
         <button
           class="w-fit rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 active:scale-95"
           type="button"

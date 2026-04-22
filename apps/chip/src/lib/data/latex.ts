@@ -1,4 +1,17 @@
 export const quizzes = {
+loopQuiz:
+`// Replace 'I' with a suitable variant to make the program verify
+{e >= 0 & n >= 0}
+i := 0;
+r := 1;
+do [I] // Replace me
+    i < n ->
+        r := r * e;
+        i := i + 1
+od
+{r = exp(e, n)}
+`,
+
 assignQuiz:
 `// TODO: Replace the question marks to make the program verify and fully annotated
 { ? }
@@ -8,20 +21,22 @@ y := y + 1
 { x > 10 & y > 5 }
 `,
 seqQuiz:
-`// TODO: Fully annotate the program
-{ x > 5 }
-y := x + 2; x := y - 1
+`// TODO: Replace the question mark to make the program verify,
+// Try to do it without fully annotating the program.
+{ ? }
+y := x + 2; 
+x := y - 1
 { x > 6 }
 `,
 skipQuiz:
 `// TODO: Fully annotate the program
-{ x > 0 } 
-skip
 { ? }
+skip
+{ x > 0 } 
 `,
 condQuiz:
 `// TODO: Fully annotate the program
-{ x > 0 }
+// Try using implication in your precondition. Check the grammar section: ==>
 if (x > 5) ->
   y := x - 2
 [] (x <= 5) ->
