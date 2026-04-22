@@ -54,8 +54,13 @@ pub fn generate_sample_program() -> String {
             );
 
     let post_cond = post_condition(pg.clone(), &mut rng);
-
-    annotate(pg.clone(), post_cond, string_program)
+    
+    let check = format!("x = x & y = y & z = z");
+    if post_cond == check {
+        generate_sample_program()
+    } else {
+        annotate(pg.clone(), post_cond, string_program)
+    }
 }
 
 
@@ -90,24 +95,29 @@ pub fn generate_challenge() -> String {
 
     let post_cond = post_condition(pg.clone(), &mut rng);
     
-    let annotated = annotate(pg, post_cond.clone(), string_program.clone());
+    let check = format!("x = x & y = y & z = z");
+    if post_cond != check {
+        let annotated = annotate(pg, post_cond.clone(), string_program.clone());
 
-    let pre_cond = annotated
-        .lines()
-        .next()
-        .map(|s| s.to_string())
-        .unwrap_or_else(|| String::from("true"));
+        let pre_cond = annotated
+            .lines()
+            .next()
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| String::from("true"));
 
-    let pre_cond_with_comment = format!("{} //GENERATED PRECONDITION", pre_cond);
+        let pre_cond_with_comment = format!("{} //GENERATED PRECONDITION", pre_cond);
 
-    let challenge_text = "// TODO: Fully annotate the following program.\n\
-                          // Try to make your annotations such that the precondition is as weak as possible.";
+        let challenge_text = "// TODO: Fully annotate the following program.\n\
+                            // Try to make your annotations such that the precondition is as weak as possible.";
 
-    format!(
-        "{}\n{}\n{}\n\n{{{}}}",
-        pre_cond_with_comment,
-        challenge_text,
-        string_program,
-        post_cond
-    )
+        format!(
+            "{}\n{}\n{}\n\n{{{}}}",
+            pre_cond_with_comment,
+            challenge_text,
+            string_program,
+            post_cond
+        )
+    } else {
+        generate_challenge()
+    }
 }
