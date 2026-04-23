@@ -120,49 +120,35 @@ export const pages = [
     `,
   },
   {
-    title: 'Rule: Skip',
+    title: 'Rules',
     math: String.raw`
-      \textbf{The Rule:}\\[4pt]
-      \frac{ }{ \{Q\} \ \text{skip} \ \{Q\} } \text{[skip]}
-      \\[14pt]
-      \textbf{Example:}\\[4pt]
-      \frac{ }{ \{x = 5\} \ \text{skip} \ \{x = 5\} }
-    `,
-  },
-  {
-    title: 'Rule: Assignment',
-    math: String.raw`
-      \textbf{The Rule:}\\[4pt]
-      \frac{ }{ \{Q[a/x]\} \ x := a \ \{Q\} } \text{[assign]}
-      \\[14pt]
-      \textbf{Example:}\\[4pt]
-      \frac{ }{ \{10 = 10\} \ x := 10 \ \{x = 10\} }
-    `,
-  },
-  {
-    title: 'Rule: Sequence',
-    math: String.raw`
-      \textbf{The Rule:}\\[4pt]
+      \begin{array}{l l l}
+      \textbf{Skip} & \textbf{Assignment} \\
+      \frac{ }{\displaystyle \{Q\} \ \text{skip} \ \{Q\} } \text{[skip]} & 
+      \frac{ }{\displaystyle \{Q[a/x]\} \ x := a \ \{Q\} } \text{[assign]} \\
+      \\
+      \textbf{Example:} & \textbf{Example:} \\
+      \frac{ }{\displaystyle \{x = 5\} \ \text{skip} \ \{x = 5\} } & 
+      \frac{ }{\displaystyle \{10 = 10\} \ x := 10 \ \{x = 10\} } \\
+      \\
+    \end{array}
+    \\[20pt]
+          \textbf{Sequence}\\[4pt]
       \frac{ \{P\} \ C_1 \ \{R\} \quad \{R\} \ C_2 \ \{Q\} }{ \{P\} \ C_1; C_2 \ \{Q\} } \text{[seq]}
       \\[14pt]
       \textbf{Example:}\\[4pt]
       \frac{ \{1 = 1\} \ x := 1 \ \{x = 1\} \quad \{x = 1\} \ y := x \ \{y = 1\} }{ \{1 = 1\} \ x := 1; y := x \ \{y = 1\} }
-    `,
-  },
-  {
-    title: 'Rule: Consequence',
-    math: String.raw`
-      \textbf{The Rule:}\\[4pt]
+
+    
+    \\[20pt]
+      \textbf{Consequence}\\[4pt]
       \frac{ P \models P' \quad \{P'\} \ C \ \{Q'\} \quad Q' \models Q }{ \{P\} \ C \ \{Q\} } \text{[cons]}
       \\[14pt]
       \textbf{Example:}\\[4pt]
-      \frac{ x = 10 \models 10 = 10 \quad \frac{}{\displaystyle \{10 = 10\} \ x := 10 \ \{x = 10\}} \quad x = 10 \models x > 0 }{ \{x = 10\} \ x := 10 \ \{x > 0\} }
-    `,
-  },
-  {
-    title: 'Rule: Conditional',
-    math: String.raw`
-      \textbf{The Rule:}\\[4pt]
+      \frac{ x = 10 \models 10 = 10 \quad \frac{}{\displaystyle \{10 = 10\} \ x := 10 \ \{x = 10\}} \quad x = 10 \models x > 0 }{ \{x = 10\} \ x := 10 \ \{x > 0\} } \\
+    
+    \\[20pt]
+    \textbf{Conditional:}\\[4pt]
       ${cond}
       \\[14pt]
       \textbf{Example:}\\[4pt]
@@ -170,7 +156,7 @@ export const pages = [
     `,
   },
   {
-    title: 'Rule: Loops',
+    title: 'Loops',
     math: String.raw`
       \textbf{The Rule:}\\[4pt]
       \frac

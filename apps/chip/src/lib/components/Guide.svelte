@@ -28,11 +28,11 @@
 
   const getQuizByPage = (page: number) => {
     const quizMap: Record<number, string> = {
-      9: quizzes.loopQuiz,
-      11: quizzes.skipQuiz,
-      12: quizzes.assignQuiz,
-      13: quizzes.seqQuiz,
-      14: quizzes.condQuiz,
+      4: quizzes.loopQuiz,
+      7: quizzes.skipQuiz,
+      8: quizzes.assignQuiz,
+      9: quizzes.seqQuiz,
+      10: quizzes.condQuiz,
     };
     return quizMap[page] ?? ``;
   };

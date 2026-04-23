@@ -1,13 +1,13 @@
-{r = a * i}//GENERATED PRECONDITION
 // Algorithm: Repeated addition
 /*
   In this program we compute a * n using repeated addition
   TODO: Make the program fully annotated and verified
 */
+{n >= 0}
 i := 0;
 r := 0;
-do [I]
-  i != n ->
+do [false]
+  i < n ->
     r := r + a;
     i := i + 1
 od
