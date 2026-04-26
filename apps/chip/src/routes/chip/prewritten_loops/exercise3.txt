@@ -1,0 +1,16 @@
+// Algorithm: Doubling
+/*
+  In this program we compute 2^n using iterative doubling.
+  Verified with Hoare Logic.
+*/
+{n >= 0}
+
+i := 0;
+x := 1;
+
+do [false]
+  i < n ->
+    x := 2 * x;
+    i := i + 1
+od
+{x = exp(2, n)}

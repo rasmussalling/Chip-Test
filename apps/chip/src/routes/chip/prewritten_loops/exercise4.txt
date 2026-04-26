@@ -1,0 +1,15 @@
+// Algorithm: Triangular Numbers
+/*
+  We compute the sum n + (n-1) + ... + 1
+*/
+{ n >= 0 }
+
+i := n;
+t := 0;
+
+do [false]
+  i != 0 ->
+    t := t + i;
+    i := i - 1
+od
+{t = n * (n + 1) / 2 }

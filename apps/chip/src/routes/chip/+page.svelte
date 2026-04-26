@@ -47,13 +47,12 @@ fi
   const modules = import.meta.glob('./exercises/*.txt', { as: 'raw', eager: true });
   const exerciseFiles = Object.values(modules) as string[];
 
-  // In the exercises folder - You can add loop exercises as .txt files with a comment at the top like:
+  // In the exercises folder - You can add loop exercises as .txt files with a comment in the top like:
   // Algorithm: ... to have a nice label in the dropdown
   let loopOptions = $state(exerciseFiles.map((content, index) => {
     const lines = content.split('\n');
     const algorithmLine = lines.find(line => line.startsWith('// Algorithm:'));
-    const solutionLine = lines.find(line => line.startsWith('// Solution:'));
-    const label = algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : solutionLine ? solutionLine.replace('// Solution:', 'S:').trim() : `Exercise ${index + 1}`;
+    const label = algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : `Exercise ${index + 1}`;
     return { label, content };
   }));
 

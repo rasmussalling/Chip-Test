@@ -168,8 +168,42 @@ export const pages = [
       \frac{ \{x \le 10 \land x < 10\} \ x := x + 1 \ \{x \le 10\} }{ \{x \le 10\} \ \text{do } x < 10 \to x := x + 1 \ \text{od} \ \{x \le 10 \land \neg(x < 10)\} }
       \\[14pt]
       \textbf{The Invariant:}\\[4pt]
-      \text{The invariant } I \text{ is a property that holds before and after every iteration of the loop.}\\
-      \text{Please understand that the invariant is something that you must come up with yourself!}\\
+      \text{A loop is correct if we can find an invariant } I \text{ such that:}\\
+      \begin{aligned}
+        &\text{1. } I \text{ holds before the loop starts} \\
+        &\text{2. } I \text{ is preserved by each iteration} \\
+        &\text{3. Upon termination, } I \land \neg b \text{ holds}
+      \end{aligned}
+      \\[12pt]
+      \textbf{Observe the Pattern}\\[4pt]
+      \begin{aligned}
+        &\text{Initially: } &&i = 0, r = 1 = e^0 \\
+        &\text{1st iteration: } &&i = 1, r = e = e^1 \\
+        &\text{2nd iteration: } &&i = 2, r = e \cdot e = e^2 \\
+      \end{aligned}
+      \implies \text{Hypothesis: } r = e^i
+      \\[12pt]
+      \textbf{Define the Full Invariant}\\[4pt]
+      \text{We must also bound } i \text{ using the loop guard } (i < n):\\
+      \boxed{I: (r = e^i) \land (0 \le i \le n)}
+      \\[12pt]
+      \textbf{Proof by mathematical induction:}\\
+      \text{Base case: } \\
+      \begin{aligned}
+        &i = 0 \\
+        &r = 1 = e^i = e^0 = 1 \quad 
+      \end{aligned} 
+      \\ \checkmark
+      \\[8pt]
+      \text{Inductive step: }\\
+      \begin{aligned}
+        &r = e^k \\
+        &r' = e \cdot r = e \cdot e^k = e^{k + 1} \\
+        &i' = k + 1 \\
+        &r' = e^{i'} \quad 
+      \end{aligned}
+      \\ \checkmark
+      \\[12pt]
     `,
   },
   {

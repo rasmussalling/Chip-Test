@@ -4,8 +4,10 @@
   TODO: Make the program fully annotated and verified
 */
 {n >= 0}
+
 i := 0;
 r := 0;
+
 do [false]
   i < n ->
     r := r + a;

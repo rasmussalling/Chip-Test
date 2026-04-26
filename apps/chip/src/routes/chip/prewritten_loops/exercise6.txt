@@ -1,0 +1,17 @@
+// Algorithm: Integer Division
+/*
+  In this program we compute the quotient and remainder of x divided by y 
+  using repeated subtraction.
+  TODO: Make the program fully annotated and verified
+*/
+{x >= 0 & y > 0}
+
+q := 0;
+r := x;
+
+do [false]
+  r >= y ->
+    r := r - y;
+    q := q + 1
+od
+{x = q * y + r & 0 <= r & r < y}

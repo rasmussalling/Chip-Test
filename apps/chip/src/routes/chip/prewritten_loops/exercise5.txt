@@ -1,0 +1,16 @@
+// Algorithm: Factorial
+/*
+  In this program we compute n! (n factorial) using iterative multiplication.
+  TODO: Make the program fully annotated and verified
+*/
+{n >= 0}
+
+i := 0;
+f := 1;
+
+do [false]
+  i < n ->
+    i := i + 1;
+    f := f * i
+od
+{f = fac(n)}

@@ -1,0 +1,17 @@
+// Algorithm: Sum of Odd Numbers
+/*
+  In this program we compute the sum of the first n odd numbers.
+  Mathematically, the sum of the first n odd integers equals n^2.
+  TODO: Make the program fully annotated and verified
+*/
+{n >= 0}
+
+i := 0;
+s := 0;
+
+do [false]
+  i < n ->
+    s := s + (2 * i + 1);
+    i := i + 1
+od
+{s = n * n}
