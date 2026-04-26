@@ -139,7 +139,7 @@ fn make_pre_condition(pg: ProgramGraph, mut current_cond: String, mut total_cond
                         total_cond.push(format!("{{{}}}", current_cond.clone()));
                     }
                 }
-                _ => current_cond = "unknown".to_string(),
+                Skip => total_cond.push(format!("{{{}}}", current_cond.clone())),
             }
         } else if incoming_edges.len() > 1 {
             for edge in incoming_edges.iter().rev() {
