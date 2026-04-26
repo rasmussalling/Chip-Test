@@ -56,7 +56,6 @@ fi
     return { label, content };
   }));
 
-  // Extract algorithm name from current program
   const getAlgorithmFromProgram = (src: string): string | null => {
     const lines = src.split('\n');
     const algorithmLine = lines.find(line => line.startsWith('// Algorithm:'));
