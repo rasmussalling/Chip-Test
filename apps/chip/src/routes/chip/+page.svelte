@@ -44,10 +44,10 @@ fi
   let generateSampleProgram: (() => string) | null = $state(null);
   let generateChallenge: (() => string) | null = $state(null);
   
-  const modules = import.meta.glob('./exercises/*.txt', { as: 'raw', eager: true });
+  const modules = import.meta.glob('./prewritten_loops/*.txt', { as: 'raw', eager: true });
   const exerciseFiles = Object.values(modules) as string[];
 
-  // In the exercises folder - You can add loop exercises as .txt files with a comment in the top like:
+  // In the prewritten_loops folder - You can add loop exercises as .txt files with a comment in the top like:
   // Algorithm: ... to have a nice label in the dropdown
   let loopOptions = $state(exerciseFiles.map((content, index) => {
     const lines = content.split('\n');
@@ -55,6 +55,19 @@ fi
     const label = algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : `Exercise ${index + 1}`;
     return { label, content };
   }));
+
+  // Extract algorithm name from current program
+  const getAlgorithmFromProgram = (src: string): string | null => {
+    const lines = src.split('\n');
+    const algorithmLine = lines.find(line => line.startsWith('// Algorithm:'));
+    return algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : null;
+  };
+
+  let currentAlgorithm = $state<string | null>(null);
+
+  $effect(() => {
+    currentAlgorithm = getAlgorithmFromProgram(program);
+  });
 
   const handleProgramChange = (newProgram: string) => {
     program = newProgram;
@@ -257,6 +270,7 @@ $effect(() => {
 
       <select
         class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
+        value={currentAlgorithm ?? ''}
         onchange={(e) => {
           const target = e.target as HTMLSelectElement;
           const selected = loopOptions.find(opt => opt.label === target.value);
@@ -264,7 +278,7 @@ $effect(() => {
           target.selectedIndex = 0;
         }}
       >
-        <option disabled selected>Loops</option>
+        <option disabled value="">Loops</option>
         {#each loopOptions as option}
           <option value={option.label}>{option.label}</option>
         {/each}
