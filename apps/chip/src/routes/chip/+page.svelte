@@ -44,7 +44,7 @@ fi
   let generateSampleProgram: (() => string) | null = $state(null);
   let generateChallenge: (() => string) | null = $state(null);
   
-  const modules = import.meta.glob('./exercises/*.txt', { as: 'raw', eager: true });
+  const modules = import.meta.glob('./prewritten_loops/*.txt', { as: 'raw', eager: true });
   const exerciseFiles = Object.values(modules) as string[];
 
   // In the exercises folder - You can add loop exercises as .txt files with a comment in the top like:
