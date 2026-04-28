@@ -1,0 +1,16 @@
+// Solution: Integer Division
+{x >= 0 & y > 0}
+
+q := 0;
+{x = q * y + x  &  x >= 0}
+r := x;
+{x = q * y + r  &  r >= 0}
+do [x = q * y + r  &  r >= 0]
+  r >= y ->
+    {x = (q + 1) * y + r - y  &  r >= y}
+    r := r - y;
+    {x = (q + 1) * y + r  &  r >= 0}
+    q := q + 1
+    {x = q * y + r  &  r >= 0}
+od
+{x = q * y + r & 0 <= r & r < y}

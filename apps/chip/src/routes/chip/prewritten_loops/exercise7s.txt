@@ -1,0 +1,16 @@
+// Solution: Sum of Odd Numbers
+{n >= 0}
+
+i := 0;
+{0 <= n & 0 = i * i}
+s := 0;
+{0 <= i & i <= n & s = i * i}
+do [0 <= i & i <= n & s = i * i]
+  i < n ->
+    {0 <= i & i < n & s = i * i}
+    s := s + (2 * i + 1);
+    {0 <= (i + 1) & (i + 1) <= n & s = (i + 1) * (i + 1)}
+    i := i + 1
+    {0 <= i & i <= n & s = i * i}
+od
+{s = n * n}

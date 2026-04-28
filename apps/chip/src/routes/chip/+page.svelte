@@ -49,17 +49,28 @@ fi
 
   // In the prewritten_loops folder - You can add loop exercises as .txt files with a comment in the top like:
   // Algorithm: ... to have a nice label in the dropdown
+  // Or // Solution: ... for solution programs
   let loopOptions = $state(exerciseFiles.map((content, index) => {
     const lines = content.split('\n');
     const algorithmLine = lines.find(line => line.startsWith('// Algorithm:'));
-    const label = algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : `Exercise ${index + 1}`;
-    return { label, content };
+    const solutionLine = lines.find(line => line.startsWith('// Solution:'));
+    const commentLine = algorithmLine || solutionLine;
+    const type = algorithmLine ? 'A' : 'S';
+    const label = commentLine 
+      ? commentLine.replace('// Algorithm:', '').replace('// Solution:', '').trim() 
+      : `Exercise ${index + 1}`;
+    return { label: `${type}: ${label}`, content };
   }));
 
   const getAlgorithmFromProgram = (src: string): string | null => {
     const lines = src.split('\n');
     const algorithmLine = lines.find(line => line.startsWith('// Algorithm:'));
-    return algorithmLine ? algorithmLine.replace('// Algorithm:', '').trim() : null;
+    const solutionLine = lines.find(line => line.startsWith('// Solution:'));
+    const commentLine = algorithmLine || solutionLine;
+    if (!commentLine) return null;
+    const type = algorithmLine ? 'A' : 'S';
+    const label = commentLine.replace('// Algorithm:', '').replace('// Solution:', '').trim();
+    return `${type}: ${label}`;
   };
 
   let currentAlgorithm = $state<string | null>(null);
@@ -267,21 +278,15 @@ $effect(() => {
         Challenge
       </button>
 
-      <select
-        class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
-        value={currentAlgorithm ?? ''}
-        onchange={(e) => {
-          const target = e.target as HTMLSelectElement;
-          const selected = loopOptions.find(opt => opt.label === target.value);
-          if (selected) program = selected.content;
-          target.selectedIndex = 0;
-        }}
-      >
-        <option disabled value="">Loops</option>
-        {#each loopOptions as option}
-          <option value={option.label}>{option.label}</option>
-        {/each}
-      </select>
+    <select
+      class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
+      bind:value={program}
+    >
+      <option disabled value="">Loops</option>
+      {#each loopOptions as option}
+        <option value={option.content}>{option.label}</option>
+      {/each}
+    </select>
     </div>
   <!-- <div>
     {#each result.assertions as triple}

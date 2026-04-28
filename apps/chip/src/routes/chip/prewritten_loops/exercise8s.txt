@@ -1,0 +1,12 @@
+// Solution: Fibonacci
+{ n >= 0 & a = 0 & b = 1 & i = 0}
+
+do [0 <= i & i <= n & a = fib(i) & b = fib(i + 1)] 
+  i < n ->
+    temp := a + b;
+    a := b;
+    b := temp;
+    i := i + 1
+od
+
+{ a = fib(n)}
