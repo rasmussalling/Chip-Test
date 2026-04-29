@@ -24,12 +24,12 @@ pub use smtlib;
     use stdx::stringify::Stringify;
 
 pub fn generate_sample_program() -> String {
-    generation().0
+    generate().0
 }
 
 
 pub fn generate_challenge() -> String {
-    let (annotated, string_program, post_cond) = generation();
+    let (annotated, string_program, post_cond) = generate();
 
     let pre_cond = annotated
         .lines()
@@ -51,7 +51,7 @@ pub fn generate_challenge() -> String {
     )
 }
 
-pub fn generation() -> (String, String, String) {
+pub fn generate() -> (String, String, String) {
     let mut custom_ctx = GclGenContext {
         fuel: 4,
         recursion_limit: 2,
@@ -95,6 +95,6 @@ pub fn generation() -> (String, String, String) {
     if post_cond != check {
         (annotated, string_program, post_cond)
     } else {
-        generation()
+        generate()
     }
 }
