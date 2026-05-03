@@ -89,15 +89,12 @@ pub fn generate_challenge() -> String {
     let determinism = Determinism::NonDeterministic;
     let mut rng = rand::rng();
 
-    // 1. GENERATE BASE PROGRAM
     let full_program = Commands::gn(&mut custom_ctx, &mut rng);
     let pg_full = gcl::pg::ProgramGraph::new(determinism, &full_program);
     let post_cond = post_condition(pg_full, &mut rng);
 
-    // 2. SELECT INSERTION POINT & SPLIT
     let (part_a, part_b) = split_program(full_program, &mut rng);
 
-    // 3. CALCULATE REQUIRED STATE AT POINT K (WP of Part B)
     let required_state_k = if part_b.0.is_empty() {
         post_cond.clone()
     } else {
@@ -110,8 +107,7 @@ pub fn generate_challenge() -> String {
             .unwrap_or_else(|| "true".to_string())
     };
 
-    // 4 & 5. GENERATE LOOP & COMBINE INVARIANT
-    let l_init = "i := 0;\n r := 0";
+    let l_init = "i := 0;\nr := 0";
     let l_inv = "i <= n & r = a * i";
     let l_body = "r := r + a; i := i + 1";
     let guard = "i < n";
