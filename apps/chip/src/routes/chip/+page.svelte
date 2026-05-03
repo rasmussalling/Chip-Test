@@ -75,8 +75,26 @@ fi
 
   let currentAlgorithm = $state<string | null>(null);
 
+  let selectedOption = $state<string | null>(null);
+
   $effect(() => {
     currentAlgorithm = getAlgorithmFromProgram(program);
+  });
+
+  $effect(() => {
+    if (currentAlgorithm === null) {
+      selectedOption = null;
+    } else {
+      selectedOption = currentAlgorithm;
+    }
+  });
+
+  $effect(() => {
+    if (selectedOption === null) {
+    } else {
+      const option = loopOptions.find(o => o.label === selectedOption);
+      if (option) program = option.content;
+    }
   });
 
   const handleProgramChange = (newProgram: string) => {
@@ -280,11 +298,11 @@ $effect(() => {
 
     <select
       class="ml-4 rounded bg-slate-900/60 px-3 py-1 text-lg transition hover:bg-slate-900"
-      bind:value={program}
+      bind:value={selectedOption}
     >
-      <option disabled value="">Loops</option>
-      {#each loopOptions as option}
-        <option value={option.content}>{option.label}</option>
+      <option value={null}>Loops</option>
+      {#each loopOptions as option (option.label)}
+        <option value={option.label}>{option.label}</option>
       {/each}
     </select>
     </div>
