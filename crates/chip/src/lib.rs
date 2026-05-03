@@ -114,10 +114,6 @@ pub fn generate_challenge() -> String {
     let combined_inv = format!("{} & {}", l_inv, required_state_k);
     let combined_post = format!("{} & {}", "r = a * i", post_cond);
 
-    // 7. ASSEMBLE FINAL OUTPUT
-    let challenge_header = "// TODO: Fully annotate the following program.\n\
-                            // Try to make your annotations such that the precondition is as weak as possible.";
-
     let program_code = format!(
         "{};\n{};\ndo [{}] {} ->\n    {}\nod;\n{}",
         part_a.to_string(),
@@ -129,8 +125,7 @@ pub fn generate_challenge() -> String {
     );
 
     format!(
-        "{}\n{}\n\n{{{}}}",
-        challenge_header,
+        "{}\n\n{{{}}}",
         program_code,
         combined_post
     )
